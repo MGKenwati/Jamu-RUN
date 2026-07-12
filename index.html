@@ -6,21 +6,17 @@
     <title>Sistem Penjualan Jamu RUN</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        /* ===== RESET ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
         body {
             background: #f0f2f5;
             display: flex;
             min-height: 100vh;
         }
-
-        /* ===== SIDEBAR ===== */
         .sidebar {
             width: 250px;
             background: #1a3c34;
@@ -35,7 +31,6 @@
             z-index: 100;
             transition: transform 0.3s ease;
         }
-
         .sidebar-header {
             display: flex;
             align-items: center;
@@ -44,17 +39,14 @@
             border-bottom: 2px solid #2d6a4f;
             padding-bottom: 15px;
         }
-
         .sidebar h2 {
             font-size: 20px;
             letter-spacing: 1px;
         }
-
         .sidebar h2 i {
             margin-right: 10px;
             color: #95d5b2;
         }
-
         .menu-toggle {
             display: none;
             background: transparent;
@@ -64,7 +56,6 @@
             cursor: pointer;
             padding: 5px 10px;
         }
-
         .nav-btn {
             background: transparent;
             border: none;
@@ -81,25 +72,21 @@
             width: 100%;
             position: relative;
         }
-
         .nav-btn i {
             width: 22px;
             font-size: 18px;
             flex-shrink: 0;
         }
-
         .nav-btn:hover {
             background: #2d6a4f;
             color: white;
         }
-
         .nav-btn.active {
             background: #2d6a4f;
             color: white;
             font-weight: 600;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
-
         .nav-badge {
             position: absolute;
             right: 15px;
@@ -116,11 +103,9 @@
             display: none;
             animation: pulse 1s ease infinite;
         }
-
         .nav-badge.show {
             display: block;
         }
-
         @keyframes pulse {
             0%,
             100% {
@@ -130,8 +115,6 @@
                 transform: translateY(-50%) scale(1.1);
             }
         }
-
-        /* ===== OVERLAY ===== */
         .sidebar-overlay {
             display: none;
             position: fixed;
@@ -142,29 +125,22 @@
             background: rgba(0, 0, 0, 0.5);
             z-index: 99;
         }
-
         .sidebar-overlay.active {
             display: block;
         }
-
-        /* ===== MAIN ===== */
         .main {
             margin-left: 250px;
             padding: 20px 25px;
             width: 100%;
             min-height: 100vh;
         }
-
-        /* ===== PAGES ===== */
         .page {
             display: none;
             animation: fadeIn 0.3s ease;
         }
-
         .page.active {
             display: block;
         }
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -175,27 +151,22 @@
                 transform: translateY(0);
             }
         }
-
         .page-title {
             font-size: 24px;
             font-weight: 700;
             color: #1a3c34;
             margin-bottom: 20px;
         }
-
         .page-title i {
             margin-right: 10px;
             color: #2d6a4f;
         }
-
-        /* ===== SCORE CARDS ===== */
         .score-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
             margin-bottom: 25px;
         }
-
         .card {
             background: white;
             padding: 18px 20px;
@@ -206,11 +177,9 @@
             gap: 15px;
             transition: transform 0.2s;
         }
-
         .card:hover {
             transform: translateY(-2px);
         }
-
         .card-icon {
             width: 48px;
             height: 48px;
@@ -222,7 +191,6 @@
             color: white;
             flex-shrink: 0;
         }
-
         .card.green .card-icon {
             background: #2d6a4f;
         }
@@ -232,27 +200,22 @@
         .card.blue .card-icon {
             background: #1e6091;
         }
-
         .card-info {
             display: flex;
             flex-direction: column;
             min-width: 0;
         }
-
         .card-label {
             font-size: 13px;
             color: #888;
             font-weight: 500;
         }
-
         .card-value {
             font-size: 20px;
             font-weight: 700;
             color: #1a3c34;
             word-break: break-all;
         }
-
-        /* ===== TABLE ===== */
         .table-container {
             background: white;
             border-radius: 12px;
@@ -261,29 +224,24 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
-
         .table-container h3 {
             margin-bottom: 15px;
             color: #1a3c34;
             font-size: 17px;
         }
-
         .table-container h3 i {
             margin-right: 8px;
             color: #2d6a4f;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
             min-width: 600px;
         }
-
         thead {
             background: #f8f9fa;
         }
-
         th {
             padding: 10px 12px;
             text-align: left;
@@ -292,19 +250,15 @@
             border-bottom: 2px solid #e9ecef;
             white-space: nowrap;
         }
-
         td {
             padding: 10px 12px;
             border-bottom: 1px solid #f0f0f0;
             vertical-align: middle;
             word-break: break-word;
         }
-
         tr:hover td {
             background: #f8f9fa;
         }
-
-        /* ===== FORM ===== */
         .form-card {
             background: white;
             border-radius: 12px;
@@ -313,22 +267,18 @@
             margin-bottom: 25px;
             max-width: 100%;
         }
-
         .form-card h3 {
             margin-bottom: 15px;
             color: #1a3c34;
             font-size: 17px;
         }
-
         .form-card h3 i {
             margin-right: 8px;
             color: #2d6a4f;
         }
-
         .form-group {
             margin-bottom: 15px;
         }
-
         .form-group label {
             display: block;
             font-weight: 600;
@@ -336,7 +286,6 @@
             margin-bottom: 5px;
             font-size: 14px;
         }
-
         .form-group input,
         .form-group select {
             width: 100%;
@@ -349,21 +298,17 @@
             -webkit-appearance: none;
             appearance: none;
         }
-
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
             border-color: #2d6a4f;
             box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
         }
-
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
         }
-
-        /* ===== BUTTONS ===== */
         .btn {
             padding: 10px 20px;
             border: none;
@@ -377,7 +322,6 @@
             gap: 8px;
             white-space: nowrap;
         }
-
         .btn-primary {
             background: #2d6a4f;
             color: white;
@@ -386,7 +330,6 @@
             background: #1a3c34;
             transform: translateY(-2px);
         }
-
         .btn-danger {
             background: #d62828;
             color: white;
@@ -394,7 +337,6 @@
         .btn-danger:hover {
             background: #a81c1c;
         }
-
         .btn-warning {
             background: #f4a261;
             color: white;
@@ -402,7 +344,6 @@
         .btn-warning:hover {
             background: #e08f4a;
         }
-
         .btn-success {
             background: #2d6a4f;
             color: white;
@@ -410,19 +351,15 @@
         .btn-success:hover {
             background: #1a3c34;
         }
-
         .btn-sm {
             padding: 5px 12px;
             font-size: 12px;
         }
-
         .action-group {
             display: flex;
             gap: 5px;
             flex-wrap: wrap;
         }
-
-        /* ===== BADGE ===== */
         .badge {
             padding: 4px 10px;
             border-radius: 20px;
@@ -431,7 +368,6 @@
             display: inline-block;
             white-space: nowrap;
         }
-
         .badge-proses {
             background: #fff3cd;
             color: #856404;
@@ -444,8 +380,6 @@
             background: #d4edda;
             color: #155724;
         }
-
-        /* ===== NOTIFICATION ===== */
         .notification-banner {
             background: #fff3cd;
             border-left: 4px solid #ffc107;
@@ -457,11 +391,9 @@
             gap: 12px;
             animation: slideDown 0.5s ease;
         }
-
         .notification-banner.show {
             display: flex;
         }
-
         @keyframes slideDown {
             from {
                 opacity: 0;
@@ -472,30 +404,25 @@
                 transform: translateY(0);
             }
         }
-
         .notification-banner i {
             font-size: 24px;
             color: #856404;
             flex-shrink: 0;
         }
-
         .notification-banner .notif-content {
             flex: 1;
             min-width: 0;
         }
-
         .notification-banner .notif-content strong {
             color: #856404;
             font-size: 15px;
         }
-
         .notification-banner .notif-content p {
             color: #856404;
             margin-top: 3px;
             font-size: 13px;
             word-break: break-word;
         }
-
         .notification-banner .btn-close-notif {
             background: transparent;
             border: none;
@@ -505,12 +432,9 @@
             padding: 0 8px;
             flex-shrink: 0;
         }
-
         .notification-banner .btn-close-notif:hover {
             color: #d62828;
         }
-
-        /* ===== SYNC STATUS ===== */
         .sync-status {
             font-size: 12px;
             color: #888;
@@ -523,19 +447,15 @@
             gap: 8px;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
         }
-
         .sync-status i {
             margin-right: 4px;
         }
-
         .sync-status.online {
             color: #2d6a4f;
         }
         .sync-status.offline {
             color: #d62828;
         }
-
-        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -555,17 +475,14 @@
             z-index: 999;
             font-size: 14px;
         }
-
         .toast.show {
             transform: translateY(0);
             opacity: 1;
         }
-
         .toast i {
             margin-right: 10px;
             color: #95d5b2;
         }
-
         .toast.error {
             background: #d62828;
         }
@@ -573,11 +490,7 @@
             color: #ffcccc;
         }
 
-        /* ============================================================ */
-        /* RESPONSIVE */
-        /* ============================================================ */
-
-        /* Tablet */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
             .sidebar {
                 width: 220px;
@@ -587,136 +500,93 @@
                 margin-left: 220px;
                 padding: 15px 20px;
             }
-            .score-cards {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            }
-            .form-row {
-                grid-template-columns: 1fr 1fr;
-            }
         }
-
-        /* Mobile */
         @media (max-width: 768px) {
             .sidebar {
                 width: 280px;
                 transform: translateX(-100%);
                 padding: 15px 18px;
             }
-
             .sidebar.open {
                 transform: translateX(0);
             }
-
             .sidebar-overlay.active {
                 display: block;
             }
-
             .menu-toggle {
                 display: block;
             }
-
             .main {
                 margin-left: 0;
                 padding: 12px 15px;
             }
-
             .page-title {
                 font-size: 20px;
                 margin-bottom: 15px;
             }
-
             .score-cards {
                 grid-template-columns: 1fr 1fr;
                 gap: 10px;
             }
-
             .card {
                 padding: 14px 16px;
                 gap: 12px;
             }
-
             .card-icon {
                 width: 40px;
                 height: 40px;
                 font-size: 18px;
             }
-
             .card-value {
                 font-size: 17px;
             }
-
             .card-label {
                 font-size: 12px;
             }
-
             .form-card {
                 padding: 16px 18px;
             }
-
             .form-row {
                 grid-template-columns: 1fr;
                 gap: 0;
             }
-
             .form-group {
                 margin-bottom: 12px;
             }
-
             .form-group input,
             .form-group select {
                 padding: 8px 12px;
                 font-size: 16px;
-                /* Mencegah zoom di iOS */
             }
-
             .table-container {
                 padding: 12px 14px;
                 margin: 0 -5px;
                 border-radius: 10px;
             }
-
             .table-container h3 {
                 font-size: 15px;
             }
-
             table {
                 font-size: 12px;
                 min-width: 500px;
             }
-
             th,
             td {
                 padding: 8px 10px;
             }
-
             .btn {
                 padding: 8px 14px;
                 font-size: 13px;
             }
-
             .btn-sm {
                 padding: 4px 10px;
                 font-size: 11px;
             }
-
             .notification-banner {
                 padding: 10px 14px;
                 gap: 10px;
                 flex-wrap: wrap;
             }
-
-            .notification-banner i {
-                font-size: 20px;
-            }
-
-            .notification-banner .notif-content strong {
-                font-size: 14px;
-            }
-
-            .notification-banner .notif-content p {
-                font-size: 12px;
-            }
-
             .toast {
                 left: 15px;
                 right: 15px;
@@ -725,76 +595,30 @@
                 font-size: 13px;
                 max-width: 100%;
             }
-
-            .sync-status {
-                font-size: 11px;
-                padding: 6px 10px;
-            }
-
-            .action-group {
-                gap: 4px;
-            }
-
-            .badge {
-                font-size: 10px;
-                padding: 3px 8px;
-            }
         }
-
-        /* Mobile Kecil */
         @media (max-width: 480px) {
             .score-cards {
                 grid-template-columns: 1fr;
             }
-
             .sidebar {
                 width: 100%;
                 max-width: 300px;
             }
-
             .page-title {
                 font-size: 18px;
             }
-
             .card-value {
                 font-size: 16px;
             }
-
             table {
                 font-size: 11px;
                 min-width: 400px;
             }
-
             th,
             td {
                 padding: 6px 8px;
             }
-
-            .form-card {
-                padding: 14px 16px;
-            }
-
-            .main {
-                padding: 10px 12px;
-            }
         }
-
-        /* Landscape Mobile */
-        @media (max-width: 768px) and (orientation: landscape) {
-            .sidebar {
-                width: 240px;
-            }
-
-            .score-cards {
-                grid-template-columns: 1fr 1fr 1fr;
-            }
-
-            .main {
-                padding: 12px 15px;
-            }
-        }
-
-        /* Dark Mode Support */
         @media (prefers-color-scheme: dark) {
             body {
                 background: #1a1a2e;
@@ -1086,7 +910,7 @@
 
     <script>
         // ============================================================
-        // SUPABASE CONFIG - UPDATE DENGAN API KEY BARU DARI SUPABASE
+        // SUPABASE CONFIG
         // ============================================================
         const SUPABASE_URL = 'https://tcgfasppkiccqxdlmdgb.supabase.co/rest/v1/';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjZ2Zhc3Bwa2ljY3F4ZGxtZGdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NjM5OTIsImV4cCI6MjA5OTQzOTk5Mn0.KtGB0FzxgzWbPkjWZVue_y3GC6nYl-6KxneknswAA3E';
@@ -1112,13 +936,14 @@
         }
 
         // ============================================================
-        // SUPABASE FETCH
+        // SUPABASE FETCH - FIXED!
         // ============================================================
         async function supabaseFetch(table, options = {}) {
             const headers = {
                 'apikey': SUPABASE_ANON_KEY,
                 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
             };
 
             let url = SUPABASE_URL + table;
@@ -1129,7 +954,7 @@
             if (options.order) params.push('order=' + options.order);
             if (options.filter) {
                 Object.entries(options.filter).forEach(([key, value]) => {
-                    params.push(key + '=eq.' + value);
+                    params.push(key + '=eq.' + encodeURIComponent(value));
                 });
             }
             if (params.length > 0) url += '?' + params.join('&');
@@ -1142,10 +967,21 @@
 
             if (!response.ok) {
                 const errorText = await response.text();
-                throw new Error(`HTTP ${response.status}: ${errorText}`);
+                throw new Error(`HTTP ${response.status}: ${errorText || response.statusText}`);
             }
 
-            return await response.json();
+            // Cek apakah response ada isinya
+            const contentLength = response.headers.get('content-length');
+            if (contentLength === '0') {
+                return null;
+            }
+
+            try {
+                return await response.json();
+            } catch (e) {
+                // Kalo ga bisa parse JSON, return null
+                return null;
+            }
         }
 
         // ============================================================
@@ -1180,8 +1016,6 @@
                 if (pageId === 'produk') renderProduk();
                 if (pageId === 'po') loadPODropdowns();
                 if (pageId === 'pembelian') renderPembelian();
-
-                // Close sidebar on mobile
                 closeSidebar();
             });
         });
@@ -1203,7 +1037,6 @@
         document.getElementById('closeSidebar').addEventListener('click', closeSidebar);
         document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
 
-        // Show/hide mobile menu button
         function checkMobileMenu() {
             const menuBtn = document.getElementById('openSidebar');
             if (window.innerWidth <= 768) {
@@ -1213,7 +1046,6 @@
                 closeSidebar();
             }
         }
-
         window.addEventListener('resize', checkMobileMenu);
         checkMobileMenu();
 
@@ -1282,13 +1114,11 @@
         // ============================================================
         // CHECK NEW PO
         // ============================================================
-        let lastPoCount = 0;
-
         async function checkNewPO() {
             try {
                 const result = await supabaseFetch('po', { order: 'id.desc', select: 'id,customer,produk,jumlah,total,status' });
 
-                if (result.length > poData.length) {
+                if (result && result.length > poData.length) {
                     const newPOs = result.slice(0, result.length - poData.length);
                     poData = result;
                     newPOs.forEach(po => {
@@ -1296,7 +1126,7 @@
                     });
                     renderDashboard();
                     loadPODropdowns();
-                } else {
+                } else if (result) {
                     poData = result;
                 }
             } catch (error) {
