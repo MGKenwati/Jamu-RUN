@@ -366,14 +366,14 @@
         <button class="nav-btn active" data-page="dashboard">
             <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
         </button>
-        <button class="nav-btn" data-page="produk">
-            <i class="fas fa-boxes"></i> <span>Produk</span>
-        </button>
         <button class="nav-btn" data-page="po">
             <i class="fas fa-file-invoice"></i> <span>Input PO</span>
         </button>
         <button class="nav-btn" data-page="pembelian">
             <i class="fas fa-shopping-cart"></i> <span>Pembelian</span>
+        </button>
+        <button class="nav-btn" data-page="produk">
+            <i class="fas fa-boxes"></i> <span>Produk</span>
         </button>
     </div>
 
@@ -418,51 +418,7 @@
             </div>
         </div>
 
-        <!-- PRODUK -->
-        <div id="page-produk" class="page">
-            <h1 class="page-title"><i class="fas fa-boxes"></i> Manajemen Produk</h1>
-            <div class="form-card">
-                <h3 style="margin-bottom:18px; color:#1a3c34;">
-                    <i class="fas fa-plus-circle" style="color:#2d6a4f;"></i> Tambah Produk
-                </h3>
-                <form id="formProduk" onsubmit="return false;">
-                    <div class="form-group">
-                        <label>Nama Produk</label>
-                        <input type="text" id="namaProduk" placeholder="Contoh: Jamu Kunyit Asam" required />
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Volume (ml)</label>
-                            <input type="number" id="volumeProduk" placeholder="100" required />
-                        </div>
-                        <div class="form-group">
-                            <label>Harga Jual</label>
-                            <input type="number" id="hargaProduk" placeholder="15000" required />
-                        </div>
-                    </div>
-                    <input type="hidden" id="editIdProduk" />
-                    <button type="button" class="btn btn-primary" id="btnSimpanProduk">
-                        <i class="fas fa-save"></i> Simpan
-                    </button>
-                    <button type="button" class="btn btn-warning" id="btnBatalProduk" style="display:none;">
-                        <i class="fas fa-times"></i> Batal
-                    </button>
-                </form>
-            </div>
-            <div class="table-container">
-                <h3><i class="fas fa-list"></i> Daftar Produk</h3>
-                <table>
-                    <thead>
-                        <tr><th>Nama</th><th>Volume (ml)</th><th>Harga</th><th>Aksi</th></tr>
-                    </thead>
-                    <tbody id="produkTableBody">
-                        <tr><td colspan="4" style="text-align:center; color:#999;">Belum ada produk</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- PO -->
+        <!-- INPUT PO -->
         <div id="page-po" class="page">
             <h1 class="page-title"><i class="fas fa-file-invoice"></i> Input Purchase Order</h1>
             <div class="form-card">
@@ -512,6 +468,7 @@
                         <div class="form-group">
                             <label>Satuan</label>
                             <select id="satuanBarang" required>
+                                <option value="">-- Pilih Satuan --</option>
                                 <option value="liter">Liter</option>
                                 <option value="ml">ml</option>
                                 <option value="gram">Gram</option>
@@ -529,8 +486,12 @@
                         <label>Harga Total</label>
                         <input type="number" id="hargaTotalBarang" placeholder="Total harga" required />
                     </div>
+                    <input type="hidden" id="editIdPembelian" />
                     <button type="button" class="btn btn-primary" id="btnSimpanPembelian">
                         <i class="fas fa-save"></i> Simpan Pembelian
+                    </button>
+                    <button type="button" class="btn btn-warning" id="btnBatalPembelian" style="display:none;">
+                        <i class="fas fa-times"></i> Batal
                     </button>
                 </form>
             </div>
@@ -542,6 +503,50 @@
                     </thead>
                     <tbody id="pembelianTableBody">
                         <tr><td colspan="5" style="text-align:center; color:#999;">Belum ada pembelian</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PRODUK -->
+        <div id="page-produk" class="page">
+            <h1 class="page-title"><i class="fas fa-boxes"></i> Manajemen Produk</h1>
+            <div class="form-card">
+                <h3 style="margin-bottom:18px; color:#1a3c34;">
+                    <i class="fas fa-plus-circle" style="color:#2d6a4f;"></i> Tambah Produk
+                </h3>
+                <form id="formProduk" onsubmit="return false;">
+                    <div class="form-group">
+                        <label>Nama Produk</label>
+                        <input type="text" id="namaProduk" placeholder="Contoh: Jamu Kunyit Asam" required />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Volume (ml)</label>
+                            <input type="number" id="volumeProduk" placeholder="100" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Harga Jual</label>
+                            <input type="number" id="hargaProduk" placeholder="15000" required />
+                        </div>
+                    </div>
+                    <input type="hidden" id="editIdProduk" />
+                    <button type="button" class="btn btn-primary" id="btnSimpanProduk">
+                        <i class="fas fa-save"></i> Simpan
+                    </button>
+                    <button type="button" class="btn btn-warning" id="btnBatalProduk" style="display:none;">
+                        <i class="fas fa-times"></i> Batal
+                    </button>
+                </form>
+            </div>
+            <div class="table-container">
+                <h3><i class="fas fa-list"></i> Daftar Produk</h3>
+                <table>
+                    <thead>
+                        <tr><th>Nama</th><th>Volume (ml)</th><th>Harga</th><th>Aksi</th></tr>
+                    </thead>
+                    <tbody id="produkTableBody">
+                        <tr><td colspan="4" style="text-align:center; color:#999;">Belum ada produk</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -579,9 +584,9 @@
         const navBtns = document.querySelectorAll('.nav-btn');
         const pages = {
             dashboard: document.getElementById('page-dashboard'),
-            produk: document.getElementById('page-produk'),
             po: document.getElementById('page-po'),
             pembelian: document.getElementById('page-pembelian'),
+            produk: document.getElementById('page-produk'),
         };
 
         navBtns.forEach(btn => {
@@ -820,9 +825,14 @@
                     <td>${p.satuan}</td>
                     <td>Rp ${formatRupiah(p.total)}</td>
                     <td>
-                        <button class="btn btn-danger btn-sm" onclick="deletePembelian(${i})">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        <div class="action-group">
+                            <button class="btn btn-warning btn-sm" onclick="editPembelian(${i})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deletePembelian(${i})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             `).join('');
@@ -833,19 +843,42 @@
             const qty = parseInt(document.getElementById('qtyBarang').value);
             const satuan = document.getElementById('satuanBarang').value;
             const total = parseInt(document.getElementById('hargaTotalBarang').value);
+            const editId = document.getElementById('editIdPembelian').value;
 
-            if (!nama || !qty || !total) {
+            if (!nama || !qty || !total || !satuan) {
                 showToast('Semua field harus diisi!', true);
                 return;
             }
 
-            pembelianData.push({ nama, qty, satuan, total });
+            if (editId !== '') {
+                const idx = parseInt(editId);
+                pembelianData[idx] = { nama, qty, satuan, total };
+                showToast('Pembelian berhasil diupdate!');
+            } else {
+                pembelianData.push({ nama, qty, satuan, total });
+                showToast('Pembelian berhasil disimpan!');
+            }
+
             setData('pembelian', pembelianData);
             renderPembelian();
             renderDashboard();
             document.getElementById('formPembelian').reset();
-            showToast('Pembelian berhasil disimpan!');
+            document.getElementById('editIdPembelian').value = '';
+            document.getElementById('btnBatalPembelian').style.display = 'none';
+            document.getElementById('btnSimpanPembelian').innerHTML = '<i class="fas fa-save"></i> Simpan Pembelian';
         });
+
+        window.editPembelian = function(index) {
+            const p = pembelianData[index];
+            document.getElementById('namaBarang').value = p.nama;
+            document.getElementById('qtyBarang').value = p.qty;
+            document.getElementById('satuanBarang').value = p.satuan;
+            document.getElementById('hargaTotalBarang').value = p.total;
+            document.getElementById('editIdPembelian').value = index;
+            document.getElementById('btnBatalPembelian').style.display = 'inline-block';
+            document.getElementById('btnSimpanPembelian').innerHTML = '<i class="fas fa-edit"></i> Update';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
 
         window.deletePembelian = function(index) {
             if (!confirm('Yakin hapus data pembelian ini?')) return;
@@ -855,6 +888,13 @@
             renderDashboard();
             showToast('Pembelian dihapus!');
         };
+
+        document.getElementById('btnBatalPembelian').addEventListener('click', function() {
+            document.getElementById('formPembelian').reset();
+            document.getElementById('editIdPembelian').value = '';
+            this.style.display = 'none';
+            document.getElementById('btnSimpanPembelian').innerHTML = '<i class="fas fa-save"></i> Simpan Pembelian';
+        });
 
         // ========== HELPER ==========
         function formatRupiah(num) {
