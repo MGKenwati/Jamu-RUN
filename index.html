@@ -54,6 +54,7 @@
             align-items: center;
             gap: 14px;
             width: 100%;
+            position: relative;
         }
         .nav-btn i {
             width: 22px;
@@ -68,6 +69,35 @@
             color: white;
             font-weight: 600;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        /* BADGE NOTIF */
+        .nav-badge {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #d62828;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: 700;
+            min-width: 22px;
+            text-align: center;
+            display: none;
+            animation: pulse 1s ease infinite;
+        }
+        .nav-badge.show {
+            display: block;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: translateY(-50%) scale(1);
+            }
+            50% {
+                transform: translateY(-50%) scale(1.1);
+            }
         }
         .main {
             margin-left: 250px;
@@ -368,6 +398,7 @@
         </button>
         <button class="nav-btn" data-page="po">
             <i class="fas fa-file-invoice"></i> <span>Input PO</span>
+            <span class="nav-badge" id="poBadge">0</span>
         </button>
         <button class="nav-btn" data-page="pembelian">
             <i class="fas fa-shopping-cart"></i> <span>Pembelian</span>
@@ -577,7 +608,7 @@
             toast.style.background = isError ? '#d62828' : '#1a3c34';
             toast.classList.add('show');
             clearTimeout(toast._timer);
-            toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
+            toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
         // ========== NAVIGATION ==========
@@ -603,6 +634,18 @@
                 if (pageId === 'pembelian') renderPembelian();
             });
         });
+
+        // ========== BADGE NOTIF ==========
+        function updateBadge() {
+            const badge = document.getElementById('poBadge');
+            const newPO = getData('newPO', 0);
+            if (newPO > 0) {
+                badge.textContent = newPO;
+                badge.classList.add('show');
+            } else {
+                badge.classList.remove('show');
+            }
+        }
 
         // ========== PRODUK ==========
         let produkData = getData('produk', []);
@@ -691,6 +734,7 @@
         // ========== PO ==========
         let poData = getData('po', []);
         let customers = getData('customers', []);
+        let poCounter = getData('poCounter', 0);
 
         function loadPODropdowns() {
             const select = document.getElementById('pilihProduk');
@@ -704,6 +748,8 @@
             customers.forEach(c => {
                 datalist.innerHTML += `<option value="${c}">`;
             });
+
+            updateBadge();
         }
 
         document.getElementById('btnSimpanPO').addEventListener('click', function() {
@@ -739,7 +785,14 @@
             });
 
             setData('po', poData);
-            showToast('PO berhasil dibuat!');
+
+            // Increment badge
+            poCounter++;
+            setData('poCounter', poCounter);
+            setData('newPO', poCounter);
+            updateBadge();
+
+            showToast('✅ PO berhasil dibuat!');
             document.getElementById('formPO').reset();
             loadPODropdowns();
             renderDashboard();
@@ -792,6 +845,11 @@
                     </td>
                 </tr>
             `).join('');
+
+            // Reset badge setelah lihat dashboard
+            if (getData('newPO', 0) > 0) {
+                // Badge tetap muncul sampe user buka halaman PO
+            }
         }
 
         window.updateStatusPO = function(index, newStatus) {
@@ -808,6 +866,12 @@
             renderDashboard();
             showToast('PO dihapus!');
         };
+
+        // Reset badge ketika halaman PO dibuka
+        document.querySelector('[data-page="po"]').addEventListener('click', function() {
+            setData('newPO', 0);
+            updateBadge();
+        });
 
         // ========== PEMBELIAN ==========
         let pembelianData = getData('pembelian', []);
