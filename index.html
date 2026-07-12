@@ -16,6 +16,7 @@
             background: #f0f2f5;
             display: flex;
             min-height: 100vh;
+            flex-direction: column;
         }
         .sidebar {
             width: 250px;
@@ -128,12 +129,55 @@
         .sidebar-overlay.active {
             display: block;
         }
-        .main {
+
+        /* ===== MAIN WRAPPER ===== */
+        .main-wrapper {
             margin-left: 250px;
-            padding: 20px 25px;
-            width: 100%;
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
+            width: 100%;
         }
+
+        .main {
+            padding: 20px 25px;
+            flex: 1;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: #1a3c34;
+            color: #d8e2dc;
+            padding: 20px 25px;
+            text-align: center;
+            margin-top: 30px;
+            border-top: 3px solid #2d6a4f;
+        }
+        .footer .footer-brand {
+            font-size: 18px;
+            font-weight: 700;
+            color: #95d5b2;
+            letter-spacing: 1px;
+        }
+        .footer .footer-brand i {
+            margin-right: 8px;
+        }
+        .footer .footer-tagline {
+            font-size: 14px;
+            margin-top: 4px;
+            color: #a8c4b8;
+        }
+        .footer .footer-credit {
+            font-size: 12px;
+            margin-top: 6px;
+            color: #7a9e8e;
+            opacity: 0.8;
+        }
+        .footer .footer-credit i {
+            color: #d62828;
+            margin: 0 4px;
+        }
+
         .page {
             display: none;
             animation: fadeIn 0.3s ease;
@@ -458,20 +502,19 @@
         }
         .toast {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            left: 20px;
-            max-width: 400px;
-            margin: 0 auto;
+            bottom: 30px;
+            right: 30px;
+            max-width: 420px;
+            min-width: 300px;
             background: #1a3c34;
             color: white;
-            padding: 14px 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            padding: 16px 22px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
             font-weight: 500;
-            transform: translateY(120px);
+            transform: translateY(150px);
             opacity: 0;
-            transition: 0.4s ease;
+            transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             z-index: 999;
             font-size: 14px;
         }
@@ -479,25 +522,75 @@
             transform: translateY(0);
             opacity: 1;
         }
-        .toast i {
-            margin-right: 10px;
+        .toast .toast-icon {
+            font-size: 28px;
+            margin-right: 14px;
             color: #95d5b2;
+            flex-shrink: 0;
+        }
+        .toast .toast-content {
+            flex: 1;
+        }
+        .toast .toast-title {
+            font-weight: 700;
+            font-size: 16px;
+            display: block;
+        }
+        .toast .toast-message {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-top: 2px;
+            display: block;
+        }
+        .toast .toast-time {
+            font-size: 11px;
+            opacity: 0.6;
+            margin-top: 4px;
+            display: block;
         }
         .toast.error {
             background: #d62828;
         }
-        .toast.error i {
+        .toast.error .toast-icon {
             color: #ffcccc;
         }
+        .toast.success {
+            background: #1a3c34;
+        }
+        .toast.success .toast-icon {
+            color: #95d5b2;
+        }
 
-        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .toast {
+                left: 15px;
+                right: 15px;
+                bottom: 15px;
+                max-width: 100%;
+                min-width: auto;
+                padding: 14px 18px;
+            }
+            .toast .toast-icon {
+                font-size: 22px;
+                margin-right: 10px;
+            }
+            .toast .toast-title {
+                font-size: 14px;
+            }
+            .toast .toast-message {
+                font-size: 12px;
+            }
+        }
+
         @media (max-width: 1024px) {
             .sidebar {
                 width: 220px;
                 padding: 15px 12px;
             }
-            .main {
+            .main-wrapper {
                 margin-left: 220px;
+            }
+            .main {
                 padding: 15px 20px;
             }
         }
@@ -516,8 +609,10 @@
             .menu-toggle {
                 display: block;
             }
-            .main {
+            .main-wrapper {
                 margin-left: 0;
+            }
+            .main {
                 padding: 12px 15px;
             }
             .page-title {
@@ -587,13 +682,17 @@
                 gap: 10px;
                 flex-wrap: wrap;
             }
-            .toast {
-                left: 15px;
-                right: 15px;
-                bottom: 15px;
-                padding: 12px 16px;
+            .footer {
+                padding: 15px 18px;
+            }
+            .footer .footer-brand {
+                font-size: 16px;
+            }
+            .footer .footer-tagline {
                 font-size: 13px;
-                max-width: 100%;
+            }
+            .footer .footer-credit {
+                font-size: 11px;
             }
         }
         @media (max-width: 480px) {
@@ -683,6 +782,18 @@
             .notification-banner .btn-close-notif {
                 color: #ffc107;
             }
+            .footer {
+                background: #0d1f18;
+            }
+            .footer .footer-brand {
+                color: #95d5b2;
+            }
+            .footer .footer-tagline {
+                color: #7a9e8e;
+            }
+            .footer .footer-credit {
+                color: #5a7a6a;
+            }
         }
     </style>
 </head>
@@ -715,199 +826,236 @@
         </button>
     </div>
 
-    <!-- MAIN -->
-    <div class="main">
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+
         <!-- Mobile Menu Button -->
-        <button class="menu-toggle" id="openSidebar" style="display:none; background:transparent; border:none; font-size:24px; color:#1a3c34; margin-bottom:15px;">
+        <button class="menu-toggle" id="openSidebar" style="display:none; background:transparent; border:none; font-size:24px; color:#1a3c34; margin:12px 15px 0 15px;">
             <i class="fas fa-bars"></i>
         </button>
 
-        <!-- DASHBOARD -->
-        <div id="page-dashboard" class="page active">
-            <h1 class="page-title"><i class="fas fa-chart-pie"></i> Dashboard</h1>
+        <!-- MAIN CONTENT -->
+        <div class="main">
 
-            <div class="notification-banner" id="notifBanner">
-                <i class="fas fa-bell"></i>
-                <div class="notif-content">
-                    <strong id="notifTitle">📦 PO Baru!</strong>
-                    <p id="notifMessage">Ada PO baru dari customer</p>
+            <!-- DASHBOARD -->
+            <div id="page-dashboard" class="page active">
+                <h1 class="page-title"><i class="fas fa-chart-pie"></i> Dashboard</h1>
+
+                <div class="notification-banner" id="notifBanner">
+                    <i class="fas fa-bell"></i>
+                    <div class="notif-content">
+                        <strong id="notifTitle">📦 PO Baru!</strong>
+                        <p id="notifMessage">Ada PO baru dari customer</p>
+                    </div>
+                    <button class="btn-close-notif" onclick="closeNotif()">&times;</button>
                 </div>
-                <button class="btn-close-notif" onclick="closeNotif()">&times;</button>
-            </div>
 
-            <div class="sync-status online" id="syncStatus">
-                <i class="fas fa-cloud-upload-alt"></i> <span id="syncText">Online</span>
-            </div>
+                <div class="sync-status online" id="syncStatus">
+                    <i class="fas fa-cloud-upload-alt"></i> <span id="syncText">Online</span>
+                </div>
 
-            <div class="score-cards">
-                <div class="card green">
-                    <div class="card-icon"><i class="fas fa-arrow-down"></i></div>
-                    <div class="card-info">
-                        <span class="card-label">Uang Masuk</span>
-                        <span class="card-value" id="uangMasuk">Rp 0</span>
+                <div class="score-cards">
+                    <div class="card green">
+                        <div class="card-icon"><i class="fas fa-arrow-down"></i></div>
+                        <div class="card-info">
+                            <span class="card-label">Uang Masuk</span>
+                            <span class="card-value" id="uangMasuk">Rp 0</span>
+                        </div>
+                    </div>
+                    <div class="card red">
+                        <div class="card-icon"><i class="fas fa-arrow-up"></i></div>
+                        <div class="card-info">
+                            <span class="card-label">Uang Keluar</span>
+                            <span class="card-value" id="uangKeluar">Rp 0</span>
+                        </div>
+                    </div>
+                    <div class="card blue">
+                        <div class="card-icon"><i class="fas fa-wallet"></i></div>
+                        <div class="card-info">
+                            <span class="card-label">Saldo</span>
+                            <span class="card-value" id="saldo">Rp 0</span>
+                        </div>
                     </div>
                 </div>
-                <div class="card red">
-                    <div class="card-icon"><i class="fas fa-arrow-up"></i></div>
-                    <div class="card-info">
-                        <span class="card-label">Uang Keluar</span>
-                        <span class="card-value" id="uangKeluar">Rp 0</span>
-                    </div>
+
+                <div class="table-container">
+                    <h3><i class="fas fa-list"></i> Daftar Purchase Order</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Customer</th>
+                                <th>Produk</th>
+                                <th>Jumlah</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="poTableBody">
+                            <tr><td colspan="7" style="text-align:center; color:#999;">Loading data...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="card blue">
-                    <div class="card-icon"><i class="fas fa-wallet"></i></div>
-                    <div class="card-info">
-                        <span class="card-label">Saldo</span>
-                        <span class="card-value" id="saldo">Rp 0</span>
-                    </div>
-                </div>
             </div>
 
-            <div class="table-container">
-                <h3><i class="fas fa-list"></i> Daftar Purchase Order</h3>
-                <table>
-                    <thead>
-                        <tr><th>Customer</th><th>Produk</th><th>Jumlah</th><th>Total</th><th>Status</th><th>Aksi</th></tr>
-                    </thead>
-                    <tbody id="poTableBody">
-                        <tr><td colspan="6" style="text-align:center; color:#999;">Loading data...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- INPUT PO -->
-        <div id="page-po" class="page">
-            <h1 class="page-title"><i class="fas fa-file-invoice"></i> Input Purchase Order</h1>
-            <div class="form-card">
-                <h3><i class="fas fa-plus-circle"></i> Buat PO Baru</h3>
-                <form id="formPO" onsubmit="return false;">
-                    <div class="form-group">
-                        <label>Nama Customer</label>
-                        <input type="text" id="namaCustomer" placeholder="Ketikan nama customer..." list="customerList" required />
-                        <datalist id="customerList"></datalist>
-                    </div>
-                    <div class="form-group">
-                        <label>Pilih Produk</label>
-                        <select id="pilihProduk" required>
-                            <option value="">-- Pilih Produk --</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Jumlah Pembelian</label>
-                        <input type="number" id="jumlahPO" placeholder="Jumlah" required />
-                    </div>
-                    <button type="button" class="btn btn-primary" id="btnSimpanPO">
-                        <i class="fas fa-save"></i> Buat PO
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- PEMBELIAN -->
-        <div id="page-pembelian" class="page">
-            <h1 class="page-title"><i class="fas fa-shopping-cart"></i> Pembelian Barang</h1>
-            <div class="form-card">
-                <h3><i class="fas fa-plus-circle"></i> Input Pembelian</h3>
-                <form id="formPembelian" onsubmit="return false;">
-                    <div class="form-group">
-                        <label>Nama Barang</label>
-                        <input type="text" id="namaBarang" placeholder="Nama barang" required />
-                    </div>
-                    <div class="form-row">
+            <!-- INPUT PO -->
+            <div id="page-po" class="page">
+                <h1 class="page-title"><i class="fas fa-file-invoice"></i> Input Purchase Order</h1>
+                <div class="form-card">
+                    <h3><i class="fas fa-plus-circle"></i> Buat PO Baru</h3>
+                    <form id="formPO" onsubmit="return false;">
                         <div class="form-group">
-                            <label>Qty</label>
-                            <input type="number" id="qtyBarang" placeholder="Jumlah" required />
+                            <label>Nama Customer</label>
+                            <input type="text" id="namaCustomer" placeholder="Ketikan nama customer..." list="customerList" required />
+                            <datalist id="customerList"></datalist>
                         </div>
                         <div class="form-group">
-                            <label>Satuan</label>
-                            <select id="satuanBarang" required>
-                                <option value="">-- Pilih Satuan --</option>
-                                <option value="liter">Liter</option>
-                                <option value="ml">ml</option>
-                                <option value="gram">Gram</option>
-                                <option value="kg">Kg</option>
-                                <option value="bungkus">Bungkus</option>
-                                <option value="tabung">Tabung</option>
-                                <option value="galon">Galon</option>
-                                <option value="pcs">Pcs</option>
-                                <option value="botol">Botol</option>
-                                <option value="lembar">Lembar</option>
-                                <option value="NA">NA</option>
+                            <label>Pilih Produk</label>
+                            <select id="pilihProduk" required>
+                                <option value="">-- Pilih Produk --</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Harga Total</label>
-                        <input type="number" id="hargaTotalBarang" placeholder="Total harga" required />
-                    </div>
-                    <input type="hidden" id="editIdPembelian" />
-                    <button type="button" class="btn btn-primary" id="btnSimpanPembelian">
-                        <i class="fas fa-save"></i> Simpan Pembelian
-                    </button>
-                    <button type="button" class="btn btn-warning" id="btnBatalPembelian" style="display:none;">
-                        <i class="fas fa-times"></i> Batal
-                    </button>
-                </form>
+                        <div class="form-group">
+                            <label>Jumlah Pembelian</label>
+                            <input type="number" id="jumlahPO" placeholder="Jumlah" required />
+                        </div>
+                        <button type="button" class="btn btn-primary" id="btnSimpanPO">
+                            <i class="fas fa-save"></i> Buat PO
+                        </button>
+                    </form>
+                </div>
             </div>
-            <div class="table-container">
-                <h3><i class="fas fa-list"></i> Riwayat Pembelian</h3>
-                <table>
-                    <thead>
-                        <tr><th>Barang</th><th>Qty</th><th>Satuan</th><th>Total</th><th>Aksi</th></tr>
-                    </thead>
-                    <tbody id="pembelianTableBody">
-                        <tr><td colspan="5" style="text-align:center; color:#999;">Loading data...</td></tr>
-                    </tbody>
-                </table>
+
+            <!-- PEMBELIAN -->
+            <div id="page-pembelian" class="page">
+                <h1 class="page-title"><i class="fas fa-shopping-cart"></i> Pembelian Barang</h1>
+                <div class="form-card">
+                    <h3><i class="fas fa-plus-circle"></i> Input Pembelian</h3>
+                    <form id="formPembelian" onsubmit="return false;">
+                        <div class="form-group">
+                            <label>Nama Barang</label>
+                            <input type="text" id="namaBarang" placeholder="Nama barang" required />
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Qty</label>
+                                <input type="number" id="qtyBarang" placeholder="Jumlah" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Satuan</label>
+                                <select id="satuanBarang" required>
+                                    <option value="">-- Pilih Satuan --</option>
+                                    <option value="liter">Liter</option>
+                                    <option value="ml">ml</option>
+                                    <option value="gram">Gram</option>
+                                    <option value="kg">Kg</option>
+                                    <option value="bungkus">Bungkus</option>
+                                    <option value="tabung">Tabung</option>
+                                    <option value="galon">Galon</option>
+                                    <option value="pcs">Pcs</option>
+                                    <option value="botol">Botol</option>
+                                    <option value="lembar">Lembar</option>
+                                    <option value="NA">NA</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Harga Total</label>
+                            <input type="number" id="hargaTotalBarang" placeholder="Total harga" required />
+                        </div>
+                        <input type="hidden" id="editIdPembelian" />
+                        <button type="button" class="btn btn-primary" id="btnSimpanPembelian">
+                            <i class="fas fa-save"></i> Simpan Pembelian
+                        </button>
+                        <button type="button" class="btn btn-warning" id="btnBatalPembelian" style="display:none;">
+                            <i class="fas fa-times"></i> Batal
+                        </button>
+                    </form>
+                </div>
+                <div class="table-container">
+                    <h3><i class="fas fa-list"></i> Riwayat Pembelian</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Barang</th><th>Qty</th><th>Satuan</th><th>Total</th><th>Aksi</th></tr>
+                        </thead>
+                        <tbody id="pembelianTableBody">
+                            <tr><td colspan="5" style="text-align:center; color:#999;">Loading data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PRODUK -->
+            <div id="page-produk" class="page">
+                <h1 class="page-title"><i class="fas fa-boxes"></i> Manajemen Produk</h1>
+                <div class="form-card">
+                    <h3><i class="fas fa-plus-circle"></i> Tambah Produk</h3>
+                    <form id="formProduk" onsubmit="return false;">
+                        <div class="form-group">
+                            <label>Nama Produk</label>
+                            <input type="text" id="namaProduk" placeholder="Contoh: Jamu Kunyit Asam" required />
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Volume (ml)</label>
+                                <input type="number" id="volumeProduk" placeholder="100" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Harga Jual</label>
+                                <input type="number" id="hargaProduk" placeholder="15000" required />
+                            </div>
+                        </div>
+                        <input type="hidden" id="editIdProduk" />
+                        <button type="button" class="btn btn-primary" id="btnSimpanProduk">
+                            <i class="fas fa-save"></i> Simpan
+                        </button>
+                        <button type="button" class="btn btn-warning" id="btnBatalProduk" style="display:none;">
+                            <i class="fas fa-times"></i> Batal
+                        </button>
+                    </form>
+                </div>
+                <div class="table-container">
+                    <h3><i class="fas fa-list"></i> Daftar Produk</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Nama</th><th>Volume (ml)</th><th>Harga</th><th>Aksi</th></tr>
+                        </thead>
+                        <tbody id="produkTableBody">
+                            <tr><td colspan="4" style="text-align:center; color:#999;">Loading data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="footer">
+            <div class="footer-brand">
+                <i class="fas fa-leaf"></i> Jamu RUN
+            </div>
+            <div class="footer-tagline">
+                Jalan Sehat Siap Berlari
+            </div>
+            <div class="footer-credit">
+                created with <i class="fas fa-heart"></i> by Beloved
             </div>
         </div>
 
-        <!-- PRODUK -->
-        <div id="page-produk" class="page">
-            <h1 class="page-title"><i class="fas fa-boxes"></i> Manajemen Produk</h1>
-            <div class="form-card">
-                <h3><i class="fas fa-plus-circle"></i> Tambah Produk</h3>
-                <form id="formProduk" onsubmit="return false;">
-                    <div class="form-group">
-                        <label>Nama Produk</label>
-                        <input type="text" id="namaProduk" placeholder="Contoh: Jamu Kunyit Asam" required />
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Volume (ml)</label>
-                            <input type="number" id="volumeProduk" placeholder="100" required />
-                        </div>
-                        <div class="form-group">
-                            <label>Harga Jual</label>
-                            <input type="number" id="hargaProduk" placeholder="15000" required />
-                        </div>
-                    </div>
-                    <input type="hidden" id="editIdProduk" />
-                    <button type="button" class="btn btn-primary" id="btnSimpanProduk">
-                        <i class="fas fa-save"></i> Simpan
-                    </button>
-                    <button type="button" class="btn btn-warning" id="btnBatalProduk" style="display:none;">
-                        <i class="fas fa-times"></i> Batal
-                    </button>
-                </form>
-            </div>
-            <div class="table-container">
-                <h3><i class="fas fa-list"></i> Daftar Produk</h3>
-                <table>
-                    <thead>
-                        <tr><th>Nama</th><th>Volume (ml)</th><th>Harga</th><th>Aksi</th></tr>
-                    </thead>
-                    <tbody id="produkTableBody">
-                        <tr><td colspan="4" style="text-align:center; color:#999;">Loading data...</td></tr>
-                    </tbody>
-                </table>
+    </div>
+
+    <!-- TOAST NOTIF -->
+    <div class="toast" id="toast">
+        <div style="display:flex; align-items:flex-start;">
+            <i class="fas fa-check-circle toast-icon"></i>
+            <div class="toast-content">
+                <span class="toast-title" id="toastTitle">Berhasil!</span>
+                <span class="toast-message" id="toastMessage">Data berhasil disimpan</span>
+                <span class="toast-time" id="toastTime"></span>
             </div>
         </div>
     </div>
-
-    <!-- TOAST -->
-    <div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toastMessage">Berhasil!</span></div>
 
     <script>
         // ============================================================
@@ -923,21 +1071,43 @@
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
 
-        // ============================================================
-        // TOAST
-        // ============================================================
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMessage');
-            toastMsg.textContent = msg;
-            toast.className = 'toast' + (isError ? ' error' : '');
-            toast.classList.add('show');
-            clearTimeout(toast._timer);
-            toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+        function getTimeNow() {
+            return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         }
 
         // ============================================================
-        // SUPABASE FETCH - FIXED!
+        // TOAST NOTIF
+        // ============================================================
+        function showToast(title, message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastTime = document.getElementById('toastTime');
+            const icon = toast.querySelector('.toast-icon');
+
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+            toastTime.textContent = getTimeNow();
+
+            if (isError) {
+                toast.className = 'toast error';
+                icon.className = 'fas fa-exclamation-circle toast-icon';
+            } else {
+                toast.className = 'toast success';
+                icon.className = 'fas fa-check-circle toast-icon';
+            }
+
+            toast.classList.add('show');
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => toast.classList.remove('show'), 5000);
+        }
+
+        function showToastSimple(msg, isError = false) {
+            showToast(isError ? '❌ Gagal' : '✅ Berhasil', msg, isError);
+        }
+
+        // ============================================================
+        // SUPABASE FETCH
         // ============================================================
         async function supabaseFetch(table, options = {}) {
             const headers = {
@@ -949,7 +1119,6 @@
 
             let url = SUPABASE_URL + table;
 
-            // Handle query params
             const params = [];
             if (options.select) params.push('select=' + options.select);
             if (options.order) params.push('order=' + options.order);
@@ -971,7 +1140,6 @@
                 throw new Error(`HTTP ${response.status}: ${errorText || response.statusText}`);
             }
 
-            // Cek apakah response ada isinya
             const contentLength = response.headers.get('content-length');
             if (contentLength === '0') {
                 return null;
@@ -980,7 +1148,6 @@
             try {
                 return await response.json();
             } catch (e) {
-                // Kalo ga bisa parse JSON, return null
                 return null;
             }
         }
@@ -1051,7 +1218,7 @@
         checkMobileMenu();
 
         // ============================================================
-        // NOTIFIKASI
+        // NOTIFIKASI DI DASHBOARD
         // ============================================================
         function showNotif(customer, produk, jumlah, total) {
             const banner = document.getElementById('notifBanner');
@@ -1067,6 +1234,12 @@
             const badge = document.getElementById('notifBadge');
             badge.textContent = notifCount;
             badge.classList.add('show');
+
+            showToast(
+                '📦 PO Baru Masuk!',
+                `${customer} memesan ${produk} x${jumlah} (Rp ${formatRupiah(total)})`,
+                false
+            );
 
             clearTimeout(banner._timer);
             banner._timer = setTimeout(() => {
@@ -1100,14 +1273,14 @@
                 loadPODropdowns();
 
                 document.getElementById('syncStatus').className = 'sync-status online';
-                document.getElementById('syncText').textContent = 'Online - ' + new Date().toLocaleTimeString();
+                document.getElementById('syncText').textContent = 'Online - ' + getTimeNow();
 
                 return true;
             } catch (error) {
                 console.error('Error loading data:', error);
                 document.getElementById('syncStatus').className = 'sync-status offline';
                 document.getElementById('syncText').textContent = 'Offline: ' + error.message;
-                showToast('❌ Gagal konek ke Supabase!', true);
+                showToastSimple('Gagal konek ke Supabase!', true);
                 return false;
             }
         }
@@ -1122,9 +1295,11 @@
                 if (result && result.length > poData.length) {
                     const newPOs = result.slice(0, result.length - poData.length);
                     poData = result;
+
                     newPOs.forEach(po => {
                         showNotif(po.customer, po.produk, po.jumlah, po.total);
                     });
+
                     renderDashboard();
                     loadPODropdowns();
                 } else if (result) {
@@ -1170,7 +1345,7 @@
             const editId = document.getElementById('editIdProduk').value;
 
             if (!nama || !volume || !harga) {
-                showToast('Semua field harus diisi!', true);
+                showToastSimple('Semua field harus diisi!', true);
                 return;
             }
 
@@ -1182,13 +1357,13 @@
                         method: 'PATCH',
                         body: { nama, volume, harga }
                     });
-                    showToast('Produk berhasil diupdate!');
+                    showToastSimple('Produk berhasil diupdate!');
                 } else {
                     await supabaseFetch('produk', {
                         method: 'POST',
                         body: { nama, volume, harga }
                     });
-                    showToast('Produk berhasil ditambahkan!');
+                    showToastSimple('Produk berhasil ditambahkan!');
                 }
 
                 await loadAllData();
@@ -1197,7 +1372,7 @@
                 document.getElementById('btnBatalProduk').style.display = 'none';
                 document.getElementById('btnSimpanProduk').innerHTML = '<i class="fas fa-save"></i> Simpan';
             } catch (error) {
-                showToast('❌ Gagal simpan produk: ' + error.message, true);
+                showToastSimple('Gagal simpan produk: ' + error.message, true);
                 console.error(error);
             }
         });
@@ -1219,9 +1394,9 @@
                 const id = produkData[index].id;
                 await supabaseFetch('produk?id=eq.' + id, { method: 'DELETE' });
                 await loadAllData();
-                showToast('Produk dihapus!');
+                showToastSimple('Produk dihapus!');
             } catch (error) {
-                showToast('❌ Gagal hapus produk: ' + error.message, true);
+                showToastSimple('Gagal hapus produk: ' + error.message, true);
                 console.error(error);
             }
         };
@@ -1260,13 +1435,13 @@
             const jumlah = parseInt(document.getElementById('jumlahPO').value);
 
             if (!customer || !produk || !jumlah) {
-                showToast('Semua field harus diisi!', true);
+                showToastSimple('Semua field harus diisi!', true);
                 return;
             }
 
             const found = produkData.find(p => p.nama === produk);
             if (!found) {
-                showToast('Produk tidak ditemukan!', true);
+                showToastSimple('Produk tidak ditemukan!', true);
                 return;
             }
 
@@ -1284,17 +1459,19 @@
                     }
                 });
 
-                showToast('✅ PO berhasil dibuat!');
+                showToastSimple('PO berhasil dibuat!');
                 document.getElementById('formPO').reset();
                 await loadAllData();
+                showNotif(customer, produk, jumlah, total);
+
             } catch (error) {
-                showToast('❌ Gagal buat PO: ' + error.message, true);
+                showToastSimple('Gagal buat PO: ' + error.message, true);
                 console.error(error);
             }
         });
 
         // ============================================================
-        // DASHBOARD
+        // DASHBOARD - URUTAN STATUS: On Proses → Siap Kirim → Sudah Dibayar
         // ============================================================
         function renderDashboard() {
             const uangMasuk = poData
@@ -1309,9 +1486,15 @@
 
             const tbody = document.getElementById('poTableBody');
             if (!poData || poData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">Belum ada data PO</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#999;">Belum ada data PO</td></tr>';
                 return;
             }
+
+            // Urutan status yang benar
+            const statusOrder = ['On Proses', 'Siap Kirim', 'Sudah Dibayar'];
+            const sortedPO = [...poData].sort((a, b) => {
+                return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
+            });
 
             const statusMap = {
                 'On Proses': 'badge-proses',
@@ -1319,8 +1502,9 @@
                 'Sudah Dibayar': 'badge-bayar'
             };
 
-            tbody.innerHTML = poData.map((p, i) => `
+            tbody.innerHTML = sortedPO.map((p, i) => `
                 <tr>
+                    <td>${i + 1}</td>
                     <td><strong>${p.customer || '-'}</strong></td>
                     <td>${p.produk || '-'}</td>
                     <td>${p.jumlah || 0}</td>
@@ -1328,13 +1512,13 @@
                     <td><span class="badge ${statusMap[p.status] || 'badge-proses'}">${p.status || 'On Proses'}</span></td>
                     <td>
                         <div class="action-group">
-                            ${p.status === 'On Proses' ? `<button class="btn btn-warning btn-sm" onclick="updateStatusPO(${i}, 'Siap Kirim')">
+                            ${p.status === 'On Proses' ? `<button class="btn btn-warning btn-sm" onclick="updateStatusPO(${poData.indexOf(p)}, 'Siap Kirim')">
                                 <i class="fas fa-truck"></i> Kirim
                             </button>` : ''}
-                            ${p.status === 'Siap Kirim' ? `<button class="btn btn-success btn-sm" onclick="updateStatusPO(${i}, 'Sudah Dibayar')">
+                            ${p.status === 'Siap Kirim' ? `<button class="btn btn-success btn-sm" onclick="updateStatusPO(${poData.indexOf(p)}, 'Sudah Dibayar')">
                                 <i class="fas fa-check"></i> Bayar
                             </button>` : ''}
-                            ${p.status !== 'Sudah Dibayar' ? `<button class="btn btn-danger btn-sm" onclick="deletePO(${i})">
+                            ${p.status !== 'Sudah Dibayar' ? `<button class="btn btn-danger btn-sm" onclick="deletePO(${poData.indexOf(p)})">
                                 <i class="fas fa-trash"></i>
                             </button>` : ''}
                         </div>
@@ -1351,9 +1535,9 @@
                     body: { status: newStatus }
                 });
                 await loadAllData();
-                showToast(`Status diubah menjadi ${newStatus}`);
+                showToastSimple(`Status diubah menjadi ${newStatus}`);
             } catch (error) {
-                showToast('❌ Gagal update status: ' + error.message, true);
+                showToastSimple('Gagal update status: ' + error.message, true);
                 console.error(error);
             }
         };
@@ -1364,9 +1548,9 @@
                 const id = poData[index].id;
                 await supabaseFetch('po?id=eq.' + id, { method: 'DELETE' });
                 await loadAllData();
-                showToast('PO dihapus!');
+                showToastSimple('PO dihapus!');
             } catch (error) {
-                showToast('❌ Gagal hapus PO: ' + error.message, true);
+                showToastSimple('Gagal hapus PO: ' + error.message, true);
                 console.error(error);
             }
         };
@@ -1408,7 +1592,7 @@
             const editId = document.getElementById('editIdPembelian').value;
 
             if (!nama || !qty || !total || !satuan) {
-                showToast('Semua field harus diisi!', true);
+                showToastSimple('Semua field harus diisi!', true);
                 return;
             }
 
@@ -1420,13 +1604,13 @@
                         method: 'PATCH',
                         body: { nama, qty, satuan, total }
                     });
-                    showToast('Pembelian berhasil diupdate!');
+                    showToastSimple('Pembelian berhasil diupdate!');
                 } else {
                     await supabaseFetch('pembelian', {
                         method: 'POST',
                         body: { nama, qty, satuan, total }
                     });
-                    showToast('Pembelian berhasil disimpan!');
+                    showToastSimple('Pembelian berhasil disimpan!');
                 }
 
                 await loadAllData();
@@ -1435,7 +1619,7 @@
                 document.getElementById('btnBatalPembelian').style.display = 'none';
                 document.getElementById('btnSimpanPembelian').innerHTML = '<i class="fas fa-save"></i> Simpan Pembelian';
             } catch (error) {
-                showToast('❌ Gagal simpan pembelian: ' + error.message, true);
+                showToastSimple('Gagal simpan pembelian: ' + error.message, true);
                 console.error(error);
             }
         });
@@ -1458,9 +1642,9 @@
                 const id = pembelianData[index].id;
                 await supabaseFetch('pembelian?id=eq.' + id, { method: 'DELETE' });
                 await loadAllData();
-                showToast('Pembelian dihapus!');
+                showToastSimple('Pembelian dihapus!');
             } catch (error) {
-                showToast('❌ Gagal hapus pembelian: ' + error.message, true);
+                showToastSimple('Gagal hapus pembelian: ' + error.message, true);
                 console.error(error);
             }
         };
@@ -1478,10 +1662,7 @@
         document.addEventListener('DOMContentLoaded', async function() {
             await loadAllData();
 
-            // Cek PO baru tiap 5 detik
             setInterval(checkNewPO, 5000);
-
-            // Refresh full data tiap 30 detik
             setInterval(loadAllData, 30000);
         });
     </script>
