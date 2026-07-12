@@ -70,7 +70,6 @@
             font-weight: 600;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
-        /* BADGE NOTIF */
         .nav-badge {
             position: absolute;
             right: 15px;
@@ -344,6 +343,7 @@
             opacity: 0;
             transition: 0.4s ease;
             z-index: 999;
+            max-width: 400px;
         }
         .toast.show {
             transform: translateY(0);
@@ -352,6 +352,78 @@
         .toast i {
             margin-right: 10px;
             color: #95d5b2;
+        }
+        .toast.error {
+            background: #d62828;
+        }
+        .toast.error i {
+            color: #ffcccc;
+        }
+        /* NOTIFIKASI DI DASHBOARD */
+        .notification-banner {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            animation: slideDown 0.5s ease;
+        }
+        .notification-banner.show {
+            display: flex;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .notification-banner i {
+            font-size: 28px;
+            color: #856404;
+        }
+        .notification-banner .notif-content {
+            flex: 1;
+        }
+        .notification-banner .notif-content strong {
+            color: #856404;
+            font-size: 16px;
+        }
+        .notification-banner .notif-content p {
+            color: #856404;
+            margin-top: 4px;
+            font-size: 14px;
+        }
+        .notification-banner .btn-close-notif {
+            background: transparent;
+            border: none;
+            color: #856404;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+        .notification-banner .btn-close-notif:hover {
+            color: #d62828;
+        }
+        .sync-status {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+        .sync-status i {
+            margin-right: 5px;
+        }
+        .sync-status.online {
+            color: #2d6a4f;
+        }
+        .sync-status.offline {
+            color: #d62828;
         }
         @media (max-width: 768px) {
             .sidebar {
@@ -386,6 +458,10 @@
             .score-cards {
                 grid-template-columns: 1fr;
             }
+            .notification-banner {
+                flex-direction: column;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -395,10 +471,10 @@
         <h2><i class="fas fa-leaf"></i> <span>Jamu RUN</span></h2>
         <button class="nav-btn active" data-page="dashboard">
             <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
+            <span class="nav-badge" id="notifBadge">0</span>
         </button>
         <button class="nav-btn" data-page="po">
             <i class="fas fa-file-invoice"></i> <span>Input PO</span>
-            <span class="nav-badge" id="poBadge">0</span>
         </button>
         <button class="nav-btn" data-page="pembelian">
             <i class="fas fa-shopping-cart"></i> <span>Pembelian</span>
@@ -413,6 +489,22 @@
         <!-- DASHBOARD -->
         <div id="page-dashboard" class="page active">
             <h1 class="page-title"><i class="fas fa-chart-pie"></i> Dashboard</h1>
+
+            <!-- NOTIFIKASI BANNER -->
+            <div class="notification-banner" id="notifBanner">
+                <i class="fas fa-bell"></i>
+                <div class="notif-content">
+                    <strong id="notifTitle">📦 PO Baru!</strong>
+                    <p id="notifMessage">Ada PO baru dari customer</p>
+                </div>
+                <button class="btn-close-notif" onclick="closeNotif()">&times;</button>
+            </div>
+
+            <!-- SYNC STATUS -->
+            <div class="sync-status online" id="syncStatus">
+                <i class="fas fa-cloud-upload-alt"></i> Sync ke Supabase: <span id="syncText">Online</span>
+            </div>
+
             <div class="score-cards">
                 <div class="card green">
                     <div class="card-icon"><i class="fas fa-arrow-down"></i></div>
@@ -443,7 +535,7 @@
                         <tr><th>Customer</th><th>Produk</th><th>Jumlah</th><th>Total</th><th>Status</th><th>Aksi</th></tr>
                     </thead>
                     <tbody id="poTableBody">
-                        <tr><td colspan="6" style="text-align:center; color:#999;">Belum ada data PO</td></tr>
+                        <tr><td colspan="6" style="text-align:center; color:#999;">Loading data...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -533,7 +625,7 @@
                         <tr><th>Barang</th><th>Qty</th><th>Satuan</th><th>Total</th><th>Aksi</th></tr>
                     </thead>
                     <tbody id="pembelianTableBody">
-                        <tr><td colspan="5" style="text-align:center; color:#999;">Belum ada pembelian</td></tr>
+                        <tr><td colspan="5" style="text-align:center; color:#999;">Loading data...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -577,7 +669,7 @@
                         <tr><th>Nama</th><th>Volume (ml)</th><th>Harga</th><th>Aksi</th></tr>
                     </thead>
                     <tbody id="produkTableBody">
-                        <tr><td colspan="4" style="text-align:center; color:#999;">Belum ada produk</td></tr>
+                        <tr><td colspan="4" style="text-align:center; color:#999;">Loading data...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -588,30 +680,82 @@
     <div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toastMessage">Berhasil!</span></div>
 
     <script>
-        // ========== DATA STORE ==========
-        function getData(key, defaultVal) {
-            try {
-                const data = localStorage.getItem('jamu_' + key);
-                return data ? JSON.parse(data) : defaultVal;
-            } catch { return defaultVal; }
+        // ============================================================
+        // SUPABASE CONFIG
+        // ============================================================
+        const SUPABASE_URL = 'https://tcgfasppkiccqxdlmdgb.supabase.co/rest/v1/';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjZ2Zhc3Bwa2ljY3F4ZGxtZGdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NjM5OTIsImV4cCI6MjA5OTQzOTk5Mn0.KtGB0FzxgzWbPkjWZVue_y3GC6nYl-6KxneknswAA3E';
+
+        // ============================================================
+        // HELPER FUNCTIONS
+        // ============================================================
+        function formatRupiah(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
 
-        function setData(key, val) {
-            localStorage.setItem('jamu_' + key, JSON.stringify(val));
-        }
-
-        // ========== TOAST ==========
         function showToast(msg, isError = false) {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toastMessage');
             toastMsg.textContent = msg;
-            toast.style.background = isError ? '#d62828' : '#1a3c34';
+            toast.className = 'toast' + (isError ? ' error' : '');
             toast.classList.add('show');
             clearTimeout(toast._timer);
             toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // ========== NAVIGATION ==========
+        // ============================================================
+        // SUPABASE API CALLS
+        // ============================================================
+        async function supabaseFetch(table, options = {}) {
+            const headers = {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+                'Content-Type': 'application/json'
+            };
+
+            let url = SUPABASE_URL + table;
+            if (options.select) url += '?select=' + options.select;
+            if (options.order) url += (url.includes('?') ? '&' : '?') + 'order=' + options.order;
+
+            const response = await fetch(url, {
+                method: options.method || 'GET',
+                headers: headers,
+                body: options.body ? JSON.stringify(options.body) : undefined
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            return await response.json();
+        }
+
+        // ============================================================
+        // DATA STORE (Local Cache)
+        // ============================================================
+        let produkData = [];
+        let poData = [];
+        let pembelianData = [];
+        let customers = [];
+        let notifCount = 0;
+        let lastNotif = null;
+
+        // ============================================================
+        // TOAST
+        // ============================================================
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            toastMsg.textContent = msg;
+            toast.className = 'toast' + (isError ? ' error' : '');
+            toast.classList.add('show');
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // ============================================================
+        // NAVIGATION
+        // ============================================================
         const navBtns = document.querySelectorAll('.nav-btn');
         const pages = {
             dashboard: document.getElementById('page-dashboard'),
@@ -635,21 +779,111 @@
             });
         });
 
-        // ========== BADGE NOTIF ==========
-        function updateBadge() {
-            const badge = document.getElementById('poBadge');
-            const newPO = getData('newPO', 0);
-            if (newPO > 0) {
-                badge.textContent = newPO;
-                badge.classList.add('show');
-            } else {
-                badge.classList.remove('show');
+        // ============================================================
+        // NOTIFIKASI DI DASHBOARD
+        // ============================================================
+        function showNotif(customer, produk, jumlah, total) {
+            const banner = document.getElementById('notifBanner');
+            const title = document.getElementById('notifTitle');
+            const message = document.getElementById('notifMessage');
+
+            title.textContent = '📦 PO Baru dari ' + customer + '!';
+            message.textContent = `Produk: ${produk} | Jumlah: ${jumlah} | Total: Rp ${formatRupiah(total)}`;
+
+            banner.classList.add('show');
+
+            // Update badge
+            notifCount++;
+            const badge = document.getElementById('notifBadge');
+            badge.textContent = notifCount;
+            badge.classList.add('show');
+
+            // Simpan notif terakhir
+            lastNotif = { customer, produk, jumlah, total };
+
+            // Auto close setelah 10 detik
+            clearTimeout(banner._timer);
+            banner._timer = setTimeout(() => {
+                banner.classList.remove('show');
+            }, 10000);
+        }
+
+        function closeNotif() {
+            document.getElementById('notifBanner').classList.remove('show');
+        }
+
+        // ============================================================
+        // LOAD DATA FROM SUPABASE
+        // ============================================================
+        async function loadAllData() {
+            try {
+                // Load Produk
+                const produkResult = await supabaseFetch('produk');
+                produkData = produkResult;
+
+                // Load PO
+                const poResult = await supabaseFetch('po', { order: 'id.desc' });
+                poData = poResult;
+
+                // Load Pembelian
+                const pembelianResult = await supabaseFetch('pembelian');
+                pembelianData = pembelianResult;
+
+                // Extract customers dari PO
+                customers = [...new Set(poData.map(p => p.customer).filter(Boolean))];
+
+                // Update UI
+                renderDashboard();
+                renderProduk();
+                renderPembelian();
+                loadPODropdowns();
+
+                document.getElementById('syncStatus').className = 'sync-status online';
+                document.getElementById('syncText').textContent = 'Online';
+
+                return true;
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('syncStatus').className = 'sync-status offline';
+                document.getElementById('syncText').textContent = 'Offline - ' + error.message;
+                showToast('❌ Gagal load data dari Supabase!', true);
+                return false;
             }
         }
 
-        // ========== PRODUK ==========
-        let produkData = getData('produk', []);
+        // ============================================================
+        // REAL-TIME LISTENER (Supabase Realtime via polling)
+        // ============================================================
+        let lastCheck = 0;
+        let poCheckCounter = 0;
 
+        async function checkForNewPO() {
+            try {
+                const result = await supabaseFetch('po', { order: 'id.desc', select: 'id,customer,produk,jumlah,total,status' });
+
+                if (result.length > poData.length) {
+                    // Ada PO baru!
+                    const newPOs = result.slice(0, result.length - poData.length);
+                    poData = result;
+
+                    // Tampilkan notif untuk setiap PO baru
+                    newPOs.forEach(po => {
+                        showNotif(po.customer, po.produk, po.jumlah, po.total);
+                    });
+
+                    renderDashboard();
+                    loadPODropdowns();
+                } else {
+                    poData = result;
+                }
+            } catch (error) {
+                console.error('Error checking new PO:', error);
+            }
+        }
+
+        // ============================================================
+        // PRODUK CRUD
+        // ============================================================
         function renderProduk() {
             const tbody = document.getElementById('produkTableBody');
             if (produkData.length === 0) {
@@ -675,7 +909,7 @@
             `).join('');
         }
 
-        document.getElementById('btnSimpanProduk').addEventListener('click', function() {
+        document.getElementById('btnSimpanProduk').addEventListener('click', async function() {
             const nama = document.getElementById('namaProduk').value.trim();
             const volume = parseInt(document.getElementById('volumeProduk').value);
             const harga = parseInt(document.getElementById('hargaProduk').value);
@@ -686,22 +920,33 @@
                 return;
             }
 
-            if (editId !== '') {
-                const idx = parseInt(editId);
-                produkData[idx] = { nama, volume, harga };
-                showToast('Produk berhasil diupdate!');
-            } else {
-                produkData.push({ nama, volume, harga });
-                showToast('Produk berhasil ditambahkan!');
-            }
+            try {
+                if (editId !== '') {
+                    const idx = parseInt(editId);
+                    const id = produkData[idx].id;
+                    await supabaseFetch('produk?id=eq.' + id, {
+                        method: 'PATCH',
+                        body: { nama, volume, harga }
+                    });
+                    showToast('Produk berhasil diupdate!');
+                } else {
+                    await supabaseFetch('produk', {
+                        method: 'POST',
+                        body: { nama, volume, harga }
+                    });
+                    showToast('Produk berhasil ditambahkan!');
+                }
 
-            setData('produk', produkData);
-            renderProduk();
-            document.getElementById('formProduk').reset();
-            document.getElementById('editIdProduk').value = '';
-            document.getElementById('btnBatalProduk').style.display = 'none';
-            document.getElementById('btnSimpanProduk').innerHTML = '<i class="fas fa-save"></i> Simpan';
-            loadPODropdowns();
+                await loadAllData();
+                document.getElementById('formProduk').reset();
+                document.getElementById('editIdProduk').value = '';
+                document.getElementById('btnBatalProduk').style.display = 'none';
+                document.getElementById('btnSimpanProduk').innerHTML = '<i class="fas fa-save"></i> Simpan';
+                loadPODropdowns();
+            } catch (error) {
+                showToast('❌ Gagal simpan produk!', true);
+                console.error(error);
+            }
         });
 
         window.editProduk = function(index) {
@@ -715,13 +960,17 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        window.deleteProduk = function(index) {
+        window.deleteProduk = async function(index) {
             if (!confirm('Yakin hapus produk ini?')) return;
-            produkData.splice(index, 1);
-            setData('produk', produkData);
-            renderProduk();
-            loadPODropdowns();
-            showToast('Produk dihapus!');
+            try {
+                const id = produkData[index].id;
+                await supabaseFetch('produk?id=eq.' + id, { method: 'DELETE' });
+                await loadAllData();
+                showToast('Produk dihapus!');
+            } catch (error) {
+                showToast('❌ Gagal hapus produk!', true);
+                console.error(error);
+            }
         };
 
         document.getElementById('btnBatalProduk').addEventListener('click', function() {
@@ -731,11 +980,9 @@
             document.getElementById('btnSimpanProduk').innerHTML = '<i class="fas fa-save"></i> Simpan';
         });
 
-        // ========== PO ==========
-        let poData = getData('po', []);
-        let customers = getData('customers', []);
-        let poCounter = getData('poCounter', 0);
-
+        // ============================================================
+        // PO (Purchase Order)
+        // ============================================================
         function loadPODropdowns() {
             const select = document.getElementById('pilihProduk');
             select.innerHTML = '<option value="">-- Pilih Produk --</option>';
@@ -748,11 +995,9 @@
             customers.forEach(c => {
                 datalist.innerHTML += `<option value="${c}">`;
             });
-
-            updateBadge();
         }
 
-        document.getElementById('btnSimpanPO').addEventListener('click', function() {
+        document.getElementById('btnSimpanPO').addEventListener('click', async function() {
             const customer = document.getElementById('namaCustomer').value.trim();
             const produk = document.getElementById('pilihProduk').value;
             const jumlah = parseInt(document.getElementById('jumlahPO').value);
@@ -770,41 +1015,36 @@
 
             const total = found.harga * jumlah;
 
-            if (!customers.includes(customer)) {
-                customers.push(customer);
-                setData('customers', customers);
+            try {
+                await supabaseFetch('po', {
+                    method: 'POST',
+                    body: {
+                        customer,
+                        produk,
+                        jumlah,
+                        total,
+                        status: 'On Proses',
+                        tanggal: new Date().toISOString()
+                    }
+                });
+
+                showToast('✅ PO berhasil dibuat! Notifikasi muncul di Dashboard');
+                document.getElementById('formPO').reset();
+                await loadAllData();
+            } catch (error) {
+                showToast('❌ Gagal buat PO!', true);
+                console.error(error);
             }
-
-            poData.push({
-                customer,
-                produk,
-                jumlah,
-                total,
-                status: 'On Proses',
-                tanggal: new Date().toLocaleString('id-ID')
-            });
-
-            setData('po', poData);
-
-            // Increment badge
-            poCounter++;
-            setData('poCounter', poCounter);
-            setData('newPO', poCounter);
-            updateBadge();
-
-            showToast('✅ PO berhasil dibuat!');
-            document.getElementById('formPO').reset();
-            loadPODropdowns();
-            renderDashboard();
         });
 
-        // ========== DASHBOARD ==========
+        // ============================================================
+        // DASHBOARD
+        // ============================================================
         function renderDashboard() {
             const uangMasuk = poData
                 .filter(p => p.status === 'Sudah Dibayar')
                 .reduce((sum, p) => sum + p.total, 0);
 
-            const pembelianData = getData('pembelian', []);
             const uangKeluar = pembelianData.reduce((sum, p) => sum + p.total, 0);
 
             document.getElementById('uangMasuk').textContent = 'Rp ' + formatRupiah(uangMasuk);
@@ -845,37 +1085,39 @@
                     </td>
                 </tr>
             `).join('');
-
-            // Reset badge setelah lihat dashboard
-            if (getData('newPO', 0) > 0) {
-                // Badge tetap muncul sampe user buka halaman PO
-            }
         }
 
-        window.updateStatusPO = function(index, newStatus) {
-            poData[index].status = newStatus;
-            setData('po', poData);
-            renderDashboard();
-            showToast(`Status diubah menjadi ${newStatus}`);
+        window.updateStatusPO = async function(index, newStatus) {
+            try {
+                const id = poData[index].id;
+                await supabaseFetch('po?id=eq.' + id, {
+                    method: 'PATCH',
+                    body: { status: newStatus }
+                });
+                await loadAllData();
+                showToast(`Status diubah menjadi ${newStatus}`);
+            } catch (error) {
+                showToast('❌ Gagal update status!', true);
+                console.error(error);
+            }
         };
 
-        window.deletePO = function(index) {
+        window.deletePO = async function(index) {
             if (!confirm('Yakin hapus PO ini?')) return;
-            poData.splice(index, 1);
-            setData('po', poData);
-            renderDashboard();
-            showToast('PO dihapus!');
+            try {
+                const id = poData[index].id;
+                await supabaseFetch('po?id=eq.' + id, { method: 'DELETE' });
+                await loadAllData();
+                showToast('PO dihapus!');
+            } catch (error) {
+                showToast('❌ Gagal hapus PO!', true);
+                console.error(error);
+            }
         };
 
-        // Reset badge ketika halaman PO dibuka
-        document.querySelector('[data-page="po"]').addEventListener('click', function() {
-            setData('newPO', 0);
-            updateBadge();
-        });
-
-        // ========== PEMBELIAN ==========
-        let pembelianData = getData('pembelian', []);
-
+        // ============================================================
+        // PEMBELIAN
+        // ============================================================
         function renderPembelian() {
             const tbody = document.getElementById('pembelianTableBody');
             if (pembelianData.length === 0) {
@@ -902,7 +1144,7 @@
             `).join('');
         }
 
-        document.getElementById('btnSimpanPembelian').addEventListener('click', function() {
+        document.getElementById('btnSimpanPembelian').addEventListener('click', async function() {
             const nama = document.getElementById('namaBarang').value.trim();
             const qty = parseInt(document.getElementById('qtyBarang').value);
             const satuan = document.getElementById('satuanBarang').value;
@@ -914,22 +1156,32 @@
                 return;
             }
 
-            if (editId !== '') {
-                const idx = parseInt(editId);
-                pembelianData[idx] = { nama, qty, satuan, total };
-                showToast('Pembelian berhasil diupdate!');
-            } else {
-                pembelianData.push({ nama, qty, satuan, total });
-                showToast('Pembelian berhasil disimpan!');
-            }
+            try {
+                if (editId !== '') {
+                    const idx = parseInt(editId);
+                    const id = pembelianData[idx].id;
+                    await supabaseFetch('pembelian?id=eq.' + id, {
+                        method: 'PATCH',
+                        body: { nama, qty, satuan, total }
+                    });
+                    showToast('Pembelian berhasil diupdate!');
+                } else {
+                    await supabaseFetch('pembelian', {
+                        method: 'POST',
+                        body: { nama, qty, satuan, total }
+                    });
+                    showToast('Pembelian berhasil disimpan!');
+                }
 
-            setData('pembelian', pembelianData);
-            renderPembelian();
-            renderDashboard();
-            document.getElementById('formPembelian').reset();
-            document.getElementById('editIdPembelian').value = '';
-            document.getElementById('btnBatalPembelian').style.display = 'none';
-            document.getElementById('btnSimpanPembelian').innerHTML = '<i class="fas fa-save"></i> Simpan Pembelian';
+                await loadAllData();
+                document.getElementById('formPembelian').reset();
+                document.getElementById('editIdPembelian').value = '';
+                document.getElementById('btnBatalPembelian').style.display = 'none';
+                document.getElementById('btnSimpanPembelian').innerHTML = '<i class="fas fa-save"></i> Simpan Pembelian';
+            } catch (error) {
+                showToast('❌ Gagal simpan pembelian!', true);
+                console.error(error);
+            }
         });
 
         window.editPembelian = function(index) {
@@ -944,13 +1196,17 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        window.deletePembelian = function(index) {
+        window.deletePembelian = async function(index) {
             if (!confirm('Yakin hapus data pembelian ini?')) return;
-            pembelianData.splice(index, 1);
-            setData('pembelian', pembelianData);
-            renderPembelian();
-            renderDashboard();
-            showToast('Pembelian dihapus!');
+            try {
+                const id = pembelianData[index].id;
+                await supabaseFetch('pembelian?id=eq.' + id, { method: 'DELETE' });
+                await loadAllData();
+                showToast('Pembelian dihapus!');
+            } catch (error) {
+                showToast('❌ Gagal hapus pembelian!', true);
+                console.error(error);
+            }
         };
 
         document.getElementById('btnBatalPembelian').addEventListener('click', function() {
@@ -960,17 +1216,17 @@
             document.getElementById('btnSimpanPembelian').innerHTML = '<i class="fas fa-save"></i> Simpan Pembelian';
         });
 
-        // ========== HELPER ==========
-        function formatRupiah(num) {
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        }
+        // ============================================================
+        // INIT
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadAllData();
 
-        // ========== INIT ==========
-        document.addEventListener('DOMContentLoaded', function() {
-            renderDashboard();
-            renderProduk();
-            loadPODropdowns();
-            renderPembelian();
+            // Cek PO baru setiap 5 detik
+            setInterval(checkForNewPO, 5000);
+
+            // Cek data full setiap 30 detik
+            setInterval(loadAllData, 30000);
         });
     </script>
 </body>
