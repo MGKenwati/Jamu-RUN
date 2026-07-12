@@ -6,6 +6,57 @@
     <title>Sistem Penjualan Jamu RUN</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
+        /* ===== SAMA KAYA SEBELUMNYA, TAMBAHIN INI ===== */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #2d6a4f;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .checkbox-group label {
+            font-weight: 500;
+            color: #1a3c34;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 0;
+        }
+        .checkbox-group .free-badge {
+            background: #d62828;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .total-display {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2d6a4f;
+            padding: 10px 14px;
+            background: #f0f7f3;
+            border-radius: 8px;
+            border: 2px solid #2d6a4f;
+            text-align: center;
+        }
+        .total-display.free {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+        .total-display .free-label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        /* =================================================== */
+        
+        /* ... (CSS lainnya sama kayak sebelumnya) ... */
         * {
             margin: 0;
             padding: 0;
@@ -129,8 +180,6 @@
         .sidebar-overlay.active {
             display: block;
         }
-
-        /* ===== MAIN WRAPPER ===== */
         .main-wrapper {
             margin-left: 250px;
             display: flex;
@@ -138,13 +187,10 @@
             min-height: 100vh;
             width: 100%;
         }
-
         .main {
             padding: 20px 25px;
             flex: 1;
         }
-
-        /* ===== FOOTER ===== */
         .footer {
             background: #1a3c34;
             color: #d8e2dc;
@@ -177,7 +223,6 @@
             color: #d62828;
             margin: 0 4px;
         }
-
         .page {
             display: none;
             animation: fadeIn 0.3s ease;
@@ -281,7 +326,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
-            min-width: 600px;
+            min-width: 650px;
         }
         thead {
             background: #f8f9fa;
@@ -424,6 +469,10 @@
             background: #d4edda;
             color: #155724;
         }
+        .badge-free {
+            background: #f8d7da;
+            color: #721c24;
+        }
         .notification-banner {
             background: #fff3cd;
             border-left: 4px solid #ffc107;
@@ -500,6 +549,69 @@
         .sync-status.offline {
             color: #d62828;
         }
+
+        /* ===== CHECKBOX GRATIS ===== */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            transition: 0.2s;
+        }
+        .checkbox-group:hover {
+            border-color: #2d6a4f;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #2d6a4f;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .checkbox-group label {
+            font-weight: 600;
+            color: #1a3c34;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 0;
+            flex: 1;
+        }
+        .checkbox-group .free-badge {
+            background: #d62828;
+            color: white;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            animation: pulse 1.5s ease infinite;
+        }
+        .total-display {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2d6a4f;
+            padding: 10px 14px;
+            background: #f0f7f3;
+            border-radius: 8px;
+            border: 2px solid #2d6a4f;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .total-display.free {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+        .total-display .free-label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .total-display .free-label i {
+            margin-right: 6px;
+        }
+
         .toast {
             position: fixed;
             bottom: 30px;
@@ -694,6 +806,13 @@
             .footer .footer-credit {
                 font-size: 11px;
             }
+            .checkbox-group {
+                padding: 8px 12px;
+            }
+            .total-display {
+                font-size: 16px;
+                padding: 8px 12px;
+            }
         }
         @media (max-width: 480px) {
             .score-cards {
@@ -794,6 +913,23 @@
             .footer .footer-credit {
                 color: #5a7a6a;
             }
+            .checkbox-group {
+                background: #1a1a2e;
+                border-color: #333;
+            }
+            .checkbox-group label {
+                color: #e0e0e0;
+            }
+            .total-display {
+                background: #1a2a1f;
+                border-color: #2d6a4f;
+                color: #95d5b2;
+            }
+            .total-display.free {
+                background: #2d1f00;
+                border-color: #ffc107;
+                color: #ffc107;
+            }
         }
     </style>
 </head>
@@ -829,12 +965,10 @@
     <!-- MAIN WRAPPER -->
     <div class="main-wrapper">
 
-        <!-- Mobile Menu Button -->
         <button class="menu-toggle" id="openSidebar" style="display:none; background:transparent; border:none; font-size:24px; color:#1a3c34; margin:12px 15px 0 15px;">
             <i class="fas fa-bars"></i>
         </button>
 
-        <!-- MAIN CONTENT -->
         <div class="main">
 
             <!-- DASHBOARD -->
@@ -920,6 +1054,26 @@
                             <label>Jumlah Pembelian</label>
                             <input type="number" id="jumlahPO" placeholder="Jumlah" required />
                         </div>
+
+                        <!-- ===== CHECKBOX GRATIS ===== -->
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="gratisPO" />
+                                <label for="gratisPO">
+                                    🎁 Gratis / Sample
+                                    <span class="free-badge">FREE</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- ===== TOTAL DISPLAY ===== -->
+                        <div class="form-group">
+                            <label>Total Harga</label>
+                            <div class="total-display" id="totalDisplay">
+                                Rp 0
+                            </div>
+                        </div>
+
                         <button type="button" class="btn btn-primary" id="btnSimpanPO">
                             <i class="fas fa-save"></i> Buat PO
                         </button>
@@ -956,7 +1110,6 @@
                                     <option value="pcs">Pcs</option>
                                     <option value="botol">Botol</option>
                                     <option value="lembar">Lembar</option>
-                                    <option value="NA">NA</option>
                                 </select>
                             </div>
                         </div>
@@ -1030,7 +1183,7 @@
 
         </div>
 
-        <!-- ===== FOOTER ===== -->
+        <!-- FOOTER -->
         <div class="footer">
             <div class="footer-brand">
                 <i class="fas fa-leaf"></i> Jamu RUN
@@ -1045,7 +1198,7 @@
 
     </div>
 
-    <!-- TOAST NOTIF -->
+    <!-- TOAST -->
     <div class="toast" id="toast">
         <div style="display:flex; align-items:flex-start;">
             <i class="fas fa-check-circle toast-icon"></i>
@@ -1076,7 +1229,7 @@
         }
 
         // ============================================================
-        // TOAST NOTIF
+        // TOAST
         // ============================================================
         function showToast(title, message, isError = false) {
             const toast = document.getElementById('toast');
@@ -1160,6 +1313,7 @@
         let pembelianData = [];
         let customers = [];
         let notifCount = 0;
+        let isDashboardActive = true;
 
         // ============================================================
         // NAVIGATION
@@ -1180,9 +1334,19 @@
                 Object.keys(pages).forEach(key => {
                     pages[key].classList.toggle('active', key === pageId);
                 });
+
+                isDashboardActive = (pageId === 'dashboard');
+
+                if (isDashboardActive) {
+                    clearAllNotifications();
+                }
+
                 if (pageId === 'dashboard') renderDashboard();
                 if (pageId === 'produk') renderProduk();
-                if (pageId === 'po') loadPODropdowns();
+                if (pageId === 'po') {
+                    loadPODropdowns();
+                    updateTotalDisplay();
+                }
                 if (pageId === 'pembelian') renderPembelian();
                 closeSidebar();
             });
@@ -1218,15 +1382,35 @@
         checkMobileMenu();
 
         // ============================================================
-        // NOTIFIKASI DI DASHBOARD
+        // NOTIFIKASI
         // ============================================================
-        function showNotif(customer, produk, jumlah, total) {
+        function clearAllNotifications() {
+            document.getElementById('notifBanner').classList.remove('show');
+            notifCount = 0;
+            const badge = document.getElementById('notifBadge');
+            badge.textContent = '0';
+            badge.classList.remove('show');
+        }
+
+        function showNotif(customer, produk, jumlah, total, isFree = false) {
+            const label = isFree ? ' 🎁 GRATIS!' : '';
+            const totalText = isFree ? 'GRATIS' : 'Rp ' + formatRupiah(total);
+
+            if (isDashboardActive) {
+                showToast(
+                    '📦 PO Baru Masuk!' + label,
+                    `${customer} memesan ${produk} x${jumlah} (${totalText})`,
+                    false
+                );
+                return;
+            }
+
             const banner = document.getElementById('notifBanner');
             const title = document.getElementById('notifTitle');
             const message = document.getElementById('notifMessage');
 
-            title.textContent = '📦 PO Baru dari ' + customer + '!';
-            message.textContent = `Produk: ${produk} | Jumlah: ${jumlah} | Total: Rp ${formatRupiah(total)}`;
+            title.textContent = '📦 PO Baru dari ' + customer + '!' + label;
+            message.textContent = `Produk: ${produk} | Jumlah: ${jumlah} | Total: ${totalText}`;
 
             banner.classList.add('show');
 
@@ -1236,8 +1420,8 @@
             badge.classList.add('show');
 
             showToast(
-                '📦 PO Baru Masuk!',
-                `${customer} memesan ${produk} x${jumlah} (Rp ${formatRupiah(total)})`,
+                '📦 PO Baru Masuk!' + label,
+                `${customer} memesan ${produk} x${jumlah} (${totalText})`,
                 false
             );
 
@@ -1249,7 +1433,50 @@
 
         function closeNotif() {
             document.getElementById('notifBanner').classList.remove('show');
+            if (notifCount > 0) {
+                notifCount--;
+                const badge = document.getElementById('notifBadge');
+                if (notifCount === 0) {
+                    badge.classList.remove('show');
+                } else {
+                    badge.textContent = notifCount;
+                }
+            }
         }
+
+        // ============================================================
+        // UPDATE TOTAL DISPLAY (GRATIS)
+        // ============================================================
+        function updateTotalDisplay() {
+            const produk = document.getElementById('pilihProduk').value;
+            const jumlah = parseInt(document.getElementById('jumlahPO').value) || 0;
+            const isFree = document.getElementById('gratisPO').checked;
+            const totalDisplay = document.getElementById('totalDisplay');
+
+            if (isFree) {
+                totalDisplay.textContent = '🎁 GRATIS - Rp 0';
+                totalDisplay.className = 'total-display free';
+                return;
+            }
+
+            if (produk && jumlah > 0) {
+                const found = produkData.find(p => p.nama === produk);
+                if (found) {
+                    const total = found.harga * jumlah;
+                    totalDisplay.textContent = 'Rp ' + formatRupiah(total);
+                    totalDisplay.className = 'total-display';
+                    return;
+                }
+            }
+
+            totalDisplay.textContent = 'Rp 0';
+            totalDisplay.className = 'total-display';
+        }
+
+        // Event listener untuk update total
+        document.getElementById('pilihProduk').addEventListener('change', updateTotalDisplay);
+        document.getElementById('jumlahPO').addEventListener('input', updateTotalDisplay);
+        document.getElementById('gratisPO').addEventListener('change', updateTotalDisplay);
 
         // ============================================================
         // LOAD DATA
@@ -1271,6 +1498,7 @@
                 renderProduk();
                 renderPembelian();
                 loadPODropdowns();
+                updateTotalDisplay();
 
                 document.getElementById('syncStatus').className = 'sync-status online';
                 document.getElementById('syncText').textContent = 'Online - ' + getTimeNow();
@@ -1290,14 +1518,14 @@
         // ============================================================
         async function checkNewPO() {
             try {
-                const result = await supabaseFetch('po', { order: 'id.desc', select: 'id,customer,produk,jumlah,total,status' });
+                const result = await supabaseFetch('po', { order: 'id.desc', select: 'id,customer,produk,jumlah,total,status,is_free' });
 
                 if (result && result.length > poData.length) {
                     const newPOs = result.slice(0, result.length - poData.length);
                     poData = result;
 
                     newPOs.forEach(po => {
-                        showNotif(po.customer, po.produk, po.jumlah, po.total);
+                        showNotif(po.customer, po.produk, po.jumlah, po.total, po.is_free);
                     });
 
                     renderDashboard();
@@ -1427,12 +1655,14 @@
                     datalist.innerHTML += `<option value="${c}">`;
                 });
             }
+            updateTotalDisplay();
         }
 
         document.getElementById('btnSimpanPO').addEventListener('click', async function() {
             const customer = document.getElementById('namaCustomer').value.trim();
             const produk = document.getElementById('pilihProduk').value;
             const jumlah = parseInt(document.getElementById('jumlahPO').value);
+            const isFree = document.getElementById('gratisPO').checked;
 
             if (!customer || !produk || !jumlah) {
                 showToastSimple('Semua field harus diisi!', true);
@@ -1445,7 +1675,7 @@
                 return;
             }
 
-            const total = found.harga * jumlah;
+            const total = isFree ? 0 : found.harga * jumlah;
 
             try {
                 await supabaseFetch('po', {
@@ -1454,15 +1684,28 @@
                         customer,
                         produk,
                         jumlah,
-                        total,
-                        status: 'On Proses'
+                        total: total,
+                        status: 'On Proses',
+                        is_free: isFree
                     }
                 });
 
-                showToastSimple('PO berhasil dibuat!');
+                const label = isFree ? ' 🎁 GRATIS!' : '';
+                showToastSimple('PO berhasil dibuat!' + label);
                 document.getElementById('formPO').reset();
+                document.getElementById('gratisPO').checked = false;
+                updateTotalDisplay();
                 await loadAllData();
-                showNotif(customer, produk, jumlah, total);
+
+                if (isDashboardActive) {
+                    showToast(
+                        '📦 PO Baru Masuk!' + label,
+                        `${customer} memesan ${produk} x${jumlah} (${isFree ? 'GRATIS' : 'Rp ' + formatRupiah(total)})`,
+                        false
+                    );
+                } else {
+                    showNotif(customer, produk, jumlah, total, isFree);
+                }
 
             } catch (error) {
                 showToastSimple('Gagal buat PO: ' + error.message, true);
@@ -1471,11 +1714,11 @@
         });
 
         // ============================================================
-        // DASHBOARD - URUTAN STATUS: On Proses → Siap Kirim → Sudah Dibayar
+        // DASHBOARD
         // ============================================================
         function renderDashboard() {
             const uangMasuk = poData
-                .filter(p => p && p.status === 'Sudah Dibayar')
+                .filter(p => p && p.status === 'Sudah Dibayar' && !p.is_free)
                 .reduce((sum, p) => sum + (p.total || 0), 0);
 
             const uangKeluar = pembelianData.reduce((sum, p) => sum + (p.total || 0), 0);
@@ -1490,7 +1733,6 @@
                 return;
             }
 
-            // Urutan status yang benar
             const statusOrder = ['On Proses', 'Siap Kirim', 'Sudah Dibayar'];
             const sortedPO = [...poData].sort((a, b) => {
                 return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
@@ -1502,29 +1744,35 @@
                 'Sudah Dibayar': 'badge-bayar'
             };
 
-            tbody.innerHTML = sortedPO.map((p, i) => `
-                <tr>
-                    <td>${i + 1}</td>
-                    <td><strong>${p.customer || '-'}</strong></td>
-                    <td>${p.produk || '-'}</td>
-                    <td>${p.jumlah || 0}</td>
-                    <td>Rp ${formatRupiah(p.total || 0)}</td>
-                    <td><span class="badge ${statusMap[p.status] || 'badge-proses'}">${p.status || 'On Proses'}</span></td>
-                    <td>
-                        <div class="action-group">
-                            ${p.status === 'On Proses' ? `<button class="btn btn-warning btn-sm" onclick="updateStatusPO(${poData.indexOf(p)}, 'Siap Kirim')">
-                                <i class="fas fa-truck"></i> Kirim
-                            </button>` : ''}
-                            ${p.status === 'Siap Kirim' ? `<button class="btn btn-success btn-sm" onclick="updateStatusPO(${poData.indexOf(p)}, 'Sudah Dibayar')">
-                                <i class="fas fa-check"></i> Bayar
-                            </button>` : ''}
-                            ${p.status !== 'Sudah Dibayar' ? `<button class="btn btn-danger btn-sm" onclick="deletePO(${poData.indexOf(p)})">
-                                <i class="fas fa-trash"></i>
-                            </button>` : ''}
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = sortedPO.map((p, i) => {
+                const isFree = p.is_free;
+                const totalDisplay = isFree ? '🎁 GRATIS' : 'Rp ' + formatRupiah(p.total || 0);
+                const statusBadge = isFree ? 'badge-free' : (statusMap[p.status] || 'badge-proses');
+
+                return `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td><strong>${p.customer || '-'}</strong>${isFree ? ' 🎁' : ''}</td>
+                        <td>${p.produk || '-'}</td>
+                        <td>${p.jumlah || 0}</td>
+                        <td>${totalDisplay}</td>
+                        <td><span class="badge ${statusBadge}">${p.status || 'On Proses'}${isFree ? ' 🎁' : ''}</span></td>
+                        <td>
+                            <div class="action-group">
+                                ${p.status === 'On Proses' ? `<button class="btn btn-warning btn-sm" onclick="updateStatusPO(${poData.indexOf(p)}, 'Siap Kirim')">
+                                    <i class="fas fa-truck"></i> Kirim
+                                </button>` : ''}
+                                ${p.status === 'Siap Kirim' ? `<button class="btn btn-success btn-sm" onclick="updateStatusPO(${poData.indexOf(p)}, 'Sudah Dibayar')">
+                                    <i class="fas fa-check"></i> Bayar
+                                </button>` : ''}
+                                ${p.status !== 'Sudah Dibayar' ? `<button class="btn btn-danger btn-sm" onclick="deletePO(${poData.indexOf(p)})">
+                                    <i class="fas fa-trash"></i>
+                                </button>` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         window.updateStatusPO = async function(index, newStatus) {
@@ -1661,6 +1909,8 @@
         // ============================================================
         document.addEventListener('DOMContentLoaded', async function() {
             await loadAllData();
+            isDashboardActive = true;
+            clearAllNotifications();
 
             setInterval(checkNewPO, 5000);
             setInterval(loadAllData, 30000);
