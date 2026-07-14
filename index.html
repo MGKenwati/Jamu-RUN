@@ -6,57 +6,6 @@
     <title>Sistem Penjualan Jamu RUN</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        /* ===== SAMA KAYA SEBELUMNYA, TAMBAHIN INI ===== */
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 5px;
-        }
-        .checkbox-group input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: #2d6a4f;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        .checkbox-group label {
-            font-weight: 500;
-            color: #1a3c34;
-            cursor: pointer;
-            font-size: 14px;
-            margin: 0;
-        }
-        .checkbox-group .free-badge {
-            background: #d62828;
-            color: white;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-        .total-display {
-            font-size: 18px;
-            font-weight: 700;
-            color: #2d6a4f;
-            padding: 10px 14px;
-            background: #f0f7f3;
-            border-radius: 8px;
-            border: 2px solid #2d6a4f;
-            text-align: center;
-        }
-        .total-display.free {
-            background: #fff3cd;
-            border-color: #ffc107;
-            color: #856404;
-        }
-        .total-display .free-label {
-            font-size: 14px;
-            font-weight: 600;
-        }
-        /* =================================================== */
-        
-        /* ... (CSS lainnya sama kayak sebelumnya) ... */
         * {
             margin: 0;
             padding: 0;
@@ -252,7 +201,7 @@
         }
         .score-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 15px;
             margin-bottom: 25px;
         }
@@ -288,6 +237,12 @@
         }
         .card.blue .card-icon {
             background: #1e6091;
+        }
+        .card.orange .card-icon {
+            background: #e07c2c;
+        }
+        .card.purple .card-icon {
+            background: #6a4c9c;
         }
         .card-info {
             display: flex;
@@ -473,6 +428,10 @@
             background: #f8d7da;
             color: #721c24;
         }
+        .badge-belum-bayar {
+            background: #f8d7da;
+            color: #721c24;
+        }
         .notification-banner {
             background: #fff3cd;
             border-left: 4px solid #ffc107;
@@ -550,7 +509,6 @@
             color: #d62828;
         }
 
-        /* ===== CHECKBOX GRATIS ===== */
         .checkbox-group {
             display: flex;
             align-items: center;
@@ -671,6 +629,18 @@
         }
         .toast.success .toast-icon {
             color: #95d5b2;
+        }
+
+        .po-accumulated {
+            background: #e8f5e9;
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-weight: 600;
+            color: #1a3c34;
+        }
+        .po-accumulated i {
+            margin-right: 4px;
+            color: #2d6a4f;
         }
 
         @media (max-width: 768px) {
@@ -816,7 +786,7 @@
         }
         @media (max-width: 480px) {
             .score-cards {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
             }
             .sidebar {
                 width: 100%;
@@ -1010,6 +980,20 @@
                             <span class="card-value" id="saldo">Rp 0</span>
                         </div>
                     </div>
+                    <div class="card orange">
+                        <div class="card-icon"><i class="fas fa-clock"></i></div>
+                        <div class="card-info">
+                            <span class="card-label">PO On Proses</span>
+                            <span class="card-value" id="poOnProses">0</span>
+                        </div>
+                    </div>
+                    <div class="card purple">
+                        <div class="card-icon"><i class="fas fa-hourglass-half"></i></div>
+                        <div class="card-info">
+                            <span class="card-label">Belum Dibayar</span>
+                            <span class="card-value" id="belumDibayar">Rp 0</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="table-container">
@@ -1055,7 +1039,6 @@
                             <input type="number" id="jumlahPO" placeholder="Jumlah" required />
                         </div>
 
-                        <!-- ===== CHECKBOX GRATIS ===== -->
                         <div class="form-group">
                             <div class="checkbox-group">
                                 <input type="checkbox" id="gratisPO" />
@@ -1066,7 +1049,6 @@
                             </div>
                         </div>
 
-                        <!-- ===== TOTAL DISPLAY ===== -->
                         <div class="form-group">
                             <label>Total Harga</label>
                             <div class="total-display" id="totalDisplay">
@@ -1474,7 +1456,6 @@
             totalDisplay.className = 'total-display';
         }
 
-        // Event listener untuk update total
         document.getElementById('pilihProduk').addEventListener('change', updateTotalDisplay);
         document.getElementById('jumlahPO').addEventListener('input', updateTotalDisplay);
         document.getElementById('gratisPO').addEventListener('change', updateTotalDisplay);
@@ -1724,9 +1705,36 @@
 
             const uangKeluar = pembelianData.reduce((sum, p) => sum + (p.total || 0), 0);
 
+            // PO On Proses count (akumulasi per customer + produk)
+            const onProsesItems = poData.filter(p => p.status === 'On Proses' && !p.is_free);
+            const grouped = {};
+            onProsesItems.forEach(p => {
+                const key = p.customer + '|' + p.produk;
+                if (!grouped[key]) {
+                    grouped[key] = {
+                        customer: p.customer,
+                        produk: p.produk,
+                        totalQty: 0,
+                        totalHarga: 0,
+                        items: []
+                    };
+                }
+                grouped[key].totalQty += p.jumlah;
+                grouped[key].totalHarga += p.total;
+                grouped[key].items.push(p);
+            });
+            const poOnProsesCount = Object.keys(grouped).length;
+
+            // Belum Dibayar (On Proses + Siap Kirim) - total uang yang belum masuk
+            const belumBayar = poData
+                .filter(p => p && (p.status === 'On Proses' || p.status === 'Siap Kirim') && !p.is_free)
+                .reduce((sum, p) => sum + (p.total || 0), 0);
+
             document.getElementById('uangMasuk').textContent = 'Rp ' + formatRupiah(uangMasuk);
             document.getElementById('uangKeluar').textContent = 'Rp ' + formatRupiah(uangKeluar);
             document.getElementById('saldo').textContent = 'Rp ' + formatRupiah(uangMasuk - uangKeluar);
+            document.getElementById('poOnProses').textContent = poOnProsesCount;
+            document.getElementById('belumDibayar').textContent = 'Rp ' + formatRupiah(belumBayar);
 
             const tbody = document.getElementById('poTableBody');
             if (!poData || poData.length === 0) {
@@ -1734,9 +1742,68 @@
                 return;
             }
 
+            // Akumulasi untuk status On Proses (per customer + produk)
+            const onProsesMap = {};
+            poData.forEach(p => {
+                if (p.status === 'On Proses' && !p.is_free) {
+                    const key = p.customer + '|' + p.produk;
+                    if (!onProsesMap[key]) {
+                        onProsesMap[key] = {
+                            customer: p.customer,
+                            produk: p.produk,
+                            totalQty: 0,
+                            totalHarga: 0,
+                            items: [],
+                            is_free: false
+                        };
+                    }
+                    onProsesMap[key].totalQty += p.jumlah;
+                    onProsesMap[key].totalHarga += p.total;
+                    onProsesMap[key].items.push(p);
+                }
+            });
+
+            // Buat daftar final untuk ditampilkan
+            const displayList = [];
             const statusOrder = ['On Proses', 'Siap Kirim', 'Sudah Dibayar'];
-            const sortedPO = [...poData].sort((a, b) => {
-                return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
+
+            // 1. On Proses (akumulasi)
+            Object.keys(onProsesMap).forEach(key => {
+                const g = onProsesMap[key];
+                displayList.push({
+                    customer: g.customer,
+                    produk: g.produk,
+                    jumlah: g.totalQty,
+                    total: g.totalHarga,
+                    status: 'On Proses',
+                    is_free: false,
+                    is_accumulated: true,
+                    items: g.items
+                });
+            });
+
+            // 2. Siap Kirim & Sudah Dibayar (tampil per item)
+            poData.forEach(p => {
+                if (p.status !== 'On Proses' || p.is_free) {
+                    displayList.push({
+                        customer: p.customer,
+                        produk: p.produk,
+                        jumlah: p.jumlah,
+                        total: p.total,
+                        status: p.status,
+                        is_free: p.is_free || false,
+                        is_accumulated: false,
+                        items: [p]
+                    });
+                }
+            });
+
+            // Sortir
+            displayList.sort((a, b) => {
+                const idxA = statusOrder.indexOf(a.status);
+                const idxB = statusOrder.indexOf(b.status);
+                if (idxA !== idxB) return idxA - idxB;
+                return a.customer.localeCompare(b.customer);
             });
 
             const statusMap = {
@@ -1745,30 +1812,67 @@
                 'Sudah Dibayar': 'badge-bayar'
             };
 
-            tbody.innerHTML = sortedPO.map((p, i) => {
-                const isFree = p.is_free;
-                const totalDisplay = isFree ? '🎁 GRATIS' : 'Rp ' + formatRupiah(p.total || 0);
-                const statusBadge = isFree ? 'badge-free' : (statusMap[p.status] || 'badge-proses');
+            tbody.innerHTML = displayList.map((item, idx) => {
+                const isFree = item.is_free;
+                const totalDisplay = isFree ? '🎁 GRATIS' : 'Rp ' + formatRupiah(item.total || 0);
+                const statusBadge = isFree ? 'badge-free' : (statusMap[item.status] || 'badge-proses');
+
+                let jumlahDisplay = item.jumlah || 0;
+                // Cukup tampilkan angka jumlah saja, tanpa teks tambahan
+                if (item.is_accumulated) {
+                    jumlahDisplay = `<span class="po-accumulated">${item.jumlah}</span>`;
+                }
+
+                // Aksi: hanya tampilkan untuk status On Proses (akumulasi) dan Siap Kirim per item asli
+                let actionHtml = '';
+                if (item.status === 'On Proses' && item.is_accumulated) {
+                    const ids = item.items.map(it => it.id).join(',');
+                    actionHtml = `<button class="btn btn-warning btn-sm" onclick="updateStatusPOGroup('${ids}', 'Siap Kirim')">
+                                    <i class="fas fa-truck"></i> Kirim
+                                </button>`;
+                } else if (item.status === 'Siap Kirim' && !item.is_accumulated) {
+                    const id = item.items[0].id;
+                    actionHtml = `<button class="btn btn-success btn-sm" onclick="updateStatusPO(${id}, 'Sudah Dibayar')">
+                                    <i class="fas fa-check"></i> Bayar
+                                </button>`;
+                } else if (item.status === 'On Proses' && !item.is_accumulated && item.is_free) {
+                    actionHtml = `<button class="btn btn-danger btn-sm" onclick="deletePO(${item.items[0].id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>`;
+                } else if (item.status === 'On Proses' && !item.is_accumulated && !item.is_free) {
+                    const id = item.items[0].id;
+                    actionHtml = `<button class="btn btn-warning btn-sm" onclick="updateStatusPO(${id}, 'Siap Kirim')">
+                                    <i class="fas fa-truck"></i> Kirim
+                                </button>`;
+                }
+
+                // Tombol hapus untuk semua yang bukan Sudah Dibayar
+                let deleteBtn = '';
+                if (item.status !== 'Sudah Dibayar') {
+                    if (item.is_accumulated) {
+                        const ids = item.items.map(it => it.id).join(',');
+                        deleteBtn = `<button class="btn btn-danger btn-sm" onclick="deletePOGroup('${ids}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>`;
+                    } else {
+                        deleteBtn = `<button class="btn btn-danger btn-sm" onclick="deletePO(${item.items[0].id})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>`;
+                    }
+                }
 
                 return `
                     <tr>
-                        <td>${i + 1}</td>
-                        <td><strong>${p.customer || '-'}</strong>${isFree ? ' 🎁' : ''}</td>
-                        <td>${p.produk || '-'}</td>
-                        <td>${p.jumlah || 0}</td>
+                        <td>${idx + 1}</td>
+                        <td><strong>${item.customer || '-'}</strong>${isFree ? ' 🎁' : ''}</td>
+                        <td>${item.produk || '-'}</td>
+                        <td>${jumlahDisplay}</td>
                         <td>${totalDisplay}</td>
-                        <td><span class="badge ${statusBadge}">${p.status || 'On Proses'}${isFree ? ' 🎁' : ''}</span></td>
+                        <td><span class="badge ${statusBadge}">${item.status || 'On Proses'}${isFree ? ' 🎁' : ''}</span></td>
                         <td>
                             <div class="action-group">
-                                ${p.status === 'On Proses' ? `<button class="btn btn-warning btn-sm" onclick="updateStatusPO(${poData.indexOf(p)}, 'Siap Kirim')">
-                                    <i class="fas fa-truck"></i> Kirim
-                                </button>` : ''}
-                                ${p.status === 'Siap Kirim' ? `<button class="btn btn-success btn-sm" onclick="updateStatusPO(${poData.indexOf(p)}, 'Sudah Dibayar')">
-                                    <i class="fas fa-check"></i> Bayar
-                                </button>` : ''}
-                                ${p.status !== 'Sudah Dibayar' ? `<button class="btn btn-danger btn-sm" onclick="deletePO(${poData.indexOf(p)})">
-                                    <i class="fas fa-trash"></i>
-                                </button>` : ''}
+                                ${actionHtml}
+                                ${deleteBtn}
                             </div>
                         </td>
                     </tr>
@@ -1776,9 +1880,28 @@
             }).join('');
         }
 
-        window.updateStatusPO = async function(index, newStatus) {
+        // Update status untuk group (akumulasi)
+        window.updateStatusPOGroup = async function(idsStr, newStatus) {
+            const ids = idsStr.split(',').map(id => parseInt(id));
+            if (!confirm(`Update ${ids.length} PO ke status "${newStatus}"?`)) return;
             try {
-                const id = poData[index].id;
+                for (const id of ids) {
+                    await supabaseFetch('po?id=eq.' + id, {
+                        method: 'PATCH',
+                        body: { status: newStatus }
+                    });
+                }
+                await loadAllData();
+                showToastSimple(`${ids.length} PO diupdate ke ${newStatus}`);
+            } catch (error) {
+                showToastSimple('Gagal update status: ' + error.message, true);
+                console.error(error);
+            }
+        };
+
+        // Update status single
+        window.updateStatusPO = async function(id, newStatus) {
+            try {
                 await supabaseFetch('po?id=eq.' + id, {
                     method: 'PATCH',
                     body: { status: newStatus }
@@ -1791,10 +1914,26 @@
             }
         };
 
-        window.deletePO = async function(index) {
+        // Delete group
+        window.deletePOGroup = async function(idsStr) {
+            const ids = idsStr.split(',').map(id => parseInt(id));
+            if (!confirm(`Hapus ${ids.length} PO?`)) return;
+            try {
+                for (const id of ids) {
+                    await supabaseFetch('po?id=eq.' + id, { method: 'DELETE' });
+                }
+                await loadAllData();
+                showToastSimple(`${ids.length} PO dihapus!`);
+            } catch (error) {
+                showToastSimple('Gagal hapus PO: ' + error.message, true);
+                console.error(error);
+            }
+        };
+
+        // Delete single (fallback)
+        window.deletePO = async function(id) {
             if (!confirm('Yakin hapus PO ini?')) return;
             try {
-                const id = poData[index].id;
                 await supabaseFetch('po?id=eq.' + id, { method: 'DELETE' });
                 await loadAllData();
                 showToastSimple('PO dihapus!');
