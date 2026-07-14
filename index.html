@@ -283,7 +283,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
-            min-width: 650px;
+            min-width: 500px;
         }
         thead {
             background: #f8f9fa;
@@ -733,7 +733,7 @@
             }
             table {
                 font-size: 12px;
-                min-width: 500px;
+                min-width: 400px;
             }
             th,
             td {
@@ -788,7 +788,7 @@
             }
             table {
                 font-size: 11px;
-                min-width: 400px;
+                min-width: 350px;
             }
             th,
             td {
@@ -993,13 +993,12 @@
                                 <th>Customer</th>
                                 <th>Produk</th>
                                 <th>Jumlah</th>
-                                <th>Total</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="poTableBody">
-                            <tr><td colspan="7" style="text-align:center; color:#999;">Loading data...</td></tr>
+                            <tr><td colspan="6" style="text-align:center; color:#999;">Loading data...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -1614,7 +1613,7 @@
             select.innerHTML = '<option value="">-- Pilih Produk --</option>';
             if (produkData) {
                 produkData.forEach(p => {
-                    select.innerHTML += `<option value="${p.nama}" data-harga="${p.harga}">${p.nama} (Rp ${formatRupiah(p.harga)})</option>`;
+                    select.innerHTML += `<option value="${p.nama}" data-harga="${p.harga}" data-volume="${p.volume}">${p.nama} (${p.volume} ml) - Rp ${formatRupiah(p.harga)}</option>`;
                 });
             }
 
@@ -1726,7 +1725,7 @@
 
             const tbody = document.getElementById('poTableBody');
             if (!poData || poData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#999;">Belum ada data PO</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">Belum ada data PO</td></tr>';
                 return;
             }
 
@@ -1802,13 +1801,17 @@
 
             tbody.innerHTML = displayList.map((item, idx) => {
                 const isFree = item.is_free;
-                const totalDisplay = isFree ? '🎁 GRATIS' : 'Rp ' + formatRupiah(item.total || 0);
                 const statusBadge = isFree ? 'badge-free' : (statusMap[item.status] || 'badge-proses');
 
                 let jumlahDisplay = item.jumlah || 0;
                 if (item.is_accumulated) {
                     jumlahDisplay = `<span class="po-accumulated">${item.jumlah}</span>`;
                 }
+
+                // Cari volume produk
+                const produkItem = produkData.find(p => p.nama === item.produk);
+                const volumeLabel = produkItem ? ` (${produkItem.volume} ml)` : '';
+                const produkDisplay = item.produk + volumeLabel;
 
                 let actionHtml = '';
                 if (item.status === 'On Proses' && item.is_accumulated) {
@@ -1850,9 +1853,8 @@
                     <tr>
                         <td>${idx + 1}</td>
                         <td><strong>${item.customer || '-'}</strong>${isFree ? ' 🎁' : ''}</td>
-                        <td>${item.produk || '-'}</td>
+                        <td>${produkDisplay}</td>
                         <td>${jumlahDisplay}</td>
-                        <td>${totalDisplay}</td>
                         <td><span class="badge ${statusBadge}">${item.status || 'On Proses'}${isFree ? ' 🎁' : ''}</span></td>
                         <td>
                             <div class="action-group">
