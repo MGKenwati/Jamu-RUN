@@ -568,6 +568,61 @@
             margin-right: 6px;
         }
 
+        /* Product On-Proses Score Cards */
+        .product-score-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .product-card {
+            background: white;
+            padding: 14px 18px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: transform 0.2s;
+            border-left: 4px solid #f4a261;
+        }
+        .product-card:hover {
+            transform: translateY(-2px);
+        }
+        .product-card .prod-icon {
+            width: 40px;
+            height: 40px;
+            background: #f4a261;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .product-card .prod-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .product-card .prod-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a3c34;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .product-card .prod-qty {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2d6a4f;
+        }
+        .product-card .prod-detail {
+            font-size: 11px;
+            color: #888;
+        }
+
         .toast {
             position: fixed;
             bottom: 30px;
@@ -644,6 +699,9 @@
         @media (max-width: 1200px) {
             .score-cards {
                 grid-template-columns: repeat(3, 1fr);
+            }
+            .product-score-cards {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
         }
         @media (max-width: 768px) {
@@ -771,6 +829,19 @@
                 font-size: 16px;
                 padding: 8px 12px;
             }
+            .product-score-cards {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 10px;
+            }
+            .product-card {
+                padding: 12px 14px;
+            }
+            .product-card .prod-name {
+                font-size: 12px;
+            }
+            .product-card .prod-qty {
+                font-size: 18px;
+            }
         }
         @media (max-width: 480px) {
             .score-cards {
@@ -794,6 +865,9 @@
             td {
                 padding: 6px 8px;
             }
+            .product-score-cards {
+                grid-template-columns: 1fr 1fr;
+            }
         }
         @media (prefers-color-scheme: dark) {
             body {
@@ -802,7 +876,8 @@
             .card,
             .table-container,
             .form-card,
-            .sync-status {
+            .sync-status,
+            .product-card {
                 background: #16213e;
                 color: #e0e0e0;
             }
@@ -887,6 +962,21 @@
                 background: #2d1f00;
                 border-color: #ffc107;
                 color: #ffc107;
+            }
+            .product-card {
+                border-left-color: #e07c2c;
+            }
+            .product-card .prod-name {
+                color: #e0e0e0;
+            }
+            .product-card .prod-qty {
+                color: #95d5b2;
+            }
+            .product-card .prod-detail {
+                color: #aaa;
+            }
+            .product-card .prod-icon {
+                background: #e07c2c;
             }
         }
     </style>
@@ -983,6 +1073,9 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- PRODUCT ON-PROSES SCORE CARDS -->
+                <div class="product-score-cards" id="productScoreCards"></div>
 
                 <div class="table-container">
                     <h3><i class="fas fa-list"></i> Daftar Purchase Order</h3>
@@ -1683,6 +1776,59 @@
         });
 
         // ============================================================
+        // RENDER PRODUCT ON-PROSES SCORE CARDS
+        // ============================================================
+        function renderProductScoreCards() {
+            const container = document.getElementById('productScoreCards');
+            
+            // Filter PO dengan status "On Proses" dan bukan gratis
+            const onProsesItems = poData.filter(p => p.status === 'On Proses' && !p.is_free);
+            
+            // Group by produk
+            const grouped = {};
+            onProsesItems.forEach(p => {
+                if (!grouped[p.produk]) {
+                    grouped[p.produk] = {
+                        produk: p.produk,
+                        totalQty: 0,
+                        totalCustomer: new Set(),
+                        items: []
+                    };
+                }
+                grouped[p.produk].totalQty += p.jumlah;
+                grouped[p.produk].totalCustomer.add(p.customer);
+                grouped[p.produk].items.push(p);
+            });
+
+            const entries = Object.entries(grouped);
+            
+            if (entries.length === 0) {
+                container.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:#999; padding:12px 0; font-size:14px;">
+                    <i class="fas fa-info-circle"></i> Tidak ada produk dalam status On Proses
+                </div>`;
+                return;
+            }
+
+            // Cari volume produk untuk display
+            container.innerHTML = entries.map(([nama, data]) => {
+                const prod = produkData.find(p => p.nama === nama);
+                const volumeLabel = prod ? `${prod.volume} ml` : '';
+                const customerCount = data.totalCustomer.size;
+                
+                return `
+                    <div class="product-card">
+                        <div class="prod-icon"><i class="fas fa-flask"></i></div>
+                        <div class="prod-info">
+                            <div class="prod-name">${nama}</div>
+                            <div class="prod-qty">${data.totalQty}</div>
+                            <div class="prod-detail">${volumeLabel} · ${customerCount} customer</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ============================================================
         // DASHBOARD
         // ============================================================
         function renderDashboard() {
@@ -1722,6 +1868,9 @@
             document.getElementById('saldo').textContent = 'Rp ' + formatRupiah(uangMasuk - uangKeluar);
             document.getElementById('poOnProses').textContent = poOnProsesCount;
             document.getElementById('belumDibayar').textContent = 'Rp ' + formatRupiah(belumBayar);
+
+            // Render product score cards
+            renderProductScoreCards();
 
             const tbody = document.getElementById('poTableBody');
             if (!poData || poData.length === 0) {
