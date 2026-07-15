@@ -18,119 +18,91 @@
             min-height: 100vh;
             flex-direction: column;
         }
-        .sidebar {
-            width: 250px;
+
+        /* TOP BAR */
+        .topbar {
             background: #1a3c34;
             color: white;
-            padding: 20px 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            position: fixed;
-            height: 100%;
-            overflow-y: auto;
-            z-index: 100;
-            transition: transform 0.3s ease;
-        }
-        .sidebar-header {
+            padding: 12px 25px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #2d6a4f;
-            padding-bottom: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            flex-wrap: wrap;
+            gap: 10px;
         }
-        .sidebar h2 {
+        .topbar-brand {
             font-size: 20px;
+            font-weight: 700;
             letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .sidebar h2 i {
-            margin-right: 10px;
+        .topbar-brand i {
             color: #95d5b2;
         }
-        .menu-toggle {
+        .topbar-nav {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .topbar-nav .nav-btn {
+            background: transparent;
+            border: none;
+            color: #d8e2dc;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+        .topbar-nav .nav-btn:hover {
+            background: #2d6a4f;
+            color: white;
+        }
+        .topbar-nav .nav-btn.active {
+            background: #2d6a4f;
+            color: white;
+            font-weight: 600;
+        }
+        .topbar-nav .nav-badge {
+            position: absolute;
+            right: -4px;
+            top: -4px;
+            background: #d62828;
+            color: white;
+            border-radius: 50%;
+            padding: 1px 7px;
+            font-size: 10px;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
+            display: none;
+            animation: pulse 1s ease infinite;
+        }
+        .topbar-nav .nav-badge.show {
+            display: block;
+        }
+        .topbar-mobile-toggle {
             display: none;
             background: transparent;
             border: none;
             color: white;
             font-size: 24px;
             cursor: pointer;
-            padding: 5px 10px;
+            padding: 4px 8px;
         }
-        .nav-btn {
-            background: transparent;
-            border: none;
-            color: #d8e2dc;
-            padding: 12px 16px;
-            border-radius: 10px;
-            font-size: 15px;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            width: 100%;
-            position: relative;
-        }
-        .nav-btn i {
-            width: 22px;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-        .nav-btn:hover {
-            background: #2d6a4f;
-            color: white;
-        }
-        .nav-btn.active {
-            background: #2d6a4f;
-            color: white;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        }
-        .nav-badge {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #d62828;
-            color: white;
-            border-radius: 50%;
-            padding: 2px 8px;
-            font-size: 11px;
-            font-weight: 700;
-            min-width: 20px;
-            text-align: center;
-            display: none;
-            animation: pulse 1s ease infinite;
-        }
-        .nav-badge.show {
-            display: block;
-        }
-        @keyframes pulse {
-            0%,
-            100% {
-                transform: translateY(-50%) scale(1);
-            }
-            50% {
-                transform: translateY(-50%) scale(1.1);
-            }
-        }
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 99;
-        }
-        .sidebar-overlay.active {
-            display: block;
-        }
+
         .main-wrapper {
-            margin-left: 250px;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -180,14 +152,8 @@
             display: block;
         }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .page-title {
             font-size: 24px;
@@ -201,7 +167,7 @@
         }
         .score-cards {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 15px;
             margin-bottom: 25px;
         }
@@ -209,7 +175,7 @@
             background: white;
             padding: 18px 20px;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             display: flex;
             align-items: center;
             gap: 15px;
@@ -230,21 +196,10 @@
             color: white;
             flex-shrink: 0;
         }
-        .card.green .card-icon {
-            background: #2d6a4f;
-        }
-        .card.red .card-icon {
-            background: #d62828;
-        }
-        .card.blue .card-icon {
-            background: #1e6091;
-        }
-        .card.orange .card-icon {
-            background: #e07c2c;
-        }
-        .card.purple .card-icon {
-            background: #6a4c9c;
-        }
+        .card.green .card-icon { background: #2d6a4f; }
+        .card.red .card-icon { background: #d62828; }
+        .card.blue .card-icon { background: #1e6091; }
+        .card.purple .card-icon { background: #6a4c9c; }
         .card-info {
             display: flex;
             flex-direction: column;
@@ -266,7 +221,7 @@
             background: white;
             border-radius: 12px;
             padding: 18px 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
@@ -309,7 +264,7 @@
             background: white;
             border-radius: 12px;
             padding: 20px 22px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             margin-bottom: 25px;
             max-width: 100%;
         }
@@ -348,7 +303,7 @@
         .form-group select:focus {
             outline: none;
             border-color: #2d6a4f;
-            box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
+            box-shadow: 0 0 0 3px rgba(45,106,79,0.15);
         }
         .form-row {
             display: grid;
@@ -445,14 +400,8 @@
             display: flex;
         }
         @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .notification-banner i {
             font-size: 24px;
@@ -495,7 +444,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
         }
         .sync-status i {
             margin-right: 4px;
@@ -560,15 +509,8 @@
             border-color: #ffc107;
             color: #856404;
         }
-        .total-display .free-label {
-            font-size: 14px;
-            font-weight: 600;
-        }
-        .total-display .free-label i {
-            margin-right: 6px;
-        }
 
-        /* Product On-Proses Score Cards - FIXED: no text cut off */
+        /* Product On-Proses Score Cards */
         .product-score-cards {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -579,7 +521,7 @@
             background: white;
             padding: 16px 20px;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             display: flex;
             align-items: center;
             gap: 16px;
@@ -640,11 +582,11 @@
             color: white;
             padding: 16px 22px;
             border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
             font-weight: 500;
             transform: translateY(150px);
             opacity: 0;
-            transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: 0.5s cubic-bezier(0.68,-0.55,0.265,1.55);
             z-index: 999;
             font-size: 14px;
         }
@@ -705,13 +647,39 @@
 
         @media (max-width: 1200px) {
             .score-cards {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(2, 1fr);
             }
             .product-score-cards {
                 grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             }
         }
         @media (max-width: 768px) {
+            .topbar {
+                padding: 10px 15px;
+            }
+            .topbar-brand {
+                font-size: 17px;
+            }
+            .topbar-nav {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+                padding-top: 10px;
+                border-top: 1px solid #2d6a4f;
+            }
+            .topbar-nav.open {
+                display: flex;
+            }
+            .topbar-nav .nav-btn {
+                padding: 10px 14px;
+                font-size: 14px;
+                justify-content: center;
+            }
+            .topbar-mobile-toggle {
+                display: block;
+            }
             .toast {
                 left: 15px;
                 right: 15px;
@@ -720,39 +688,11 @@
                 min-width: auto;
                 padding: 14px 18px;
             }
-            .toast .toast-icon {
-                font-size: 22px;
-                margin-right: 10px;
-            }
-            .toast .toast-title {
-                font-size: 14px;
-            }
-            .toast .toast-message {
-                font-size: 12px;
-            }
-            .sidebar {
-                width: 280px;
-                transform: translateX(-100%);
-                padding: 15px 18px;
-            }
-            .sidebar.open {
-                transform: translateX(0);
-            }
-            .sidebar-overlay.active {
-                display: block;
-            }
-            .menu-toggle {
-                display: block;
-            }
-            .main-wrapper {
-                margin-left: 0;
-            }
             .main {
                 padding: 12px 15px;
             }
             .page-title {
                 font-size: 20px;
-                margin-bottom: 15px;
             }
             .score-cards {
                 grid-template-columns: 1fr 1fr;
@@ -793,15 +733,11 @@
                 margin: 0 -5px;
                 border-radius: 10px;
             }
-            .table-container h3 {
-                font-size: 15px;
-            }
             table {
                 font-size: 12px;
                 min-width: 400px;
             }
-            th,
-            td {
+            th, td {
                 padding: 8px 10px;
             }
             .btn {
@@ -811,30 +747,6 @@
             .btn-sm {
                 padding: 4px 10px;
                 font-size: 11px;
-            }
-            .notification-banner {
-                padding: 10px 14px;
-                gap: 10px;
-                flex-wrap: wrap;
-            }
-            .footer {
-                padding: 15px 18px;
-            }
-            .footer .footer-brand {
-                font-size: 16px;
-            }
-            .footer .footer-tagline {
-                font-size: 13px;
-            }
-            .footer .footer-credit {
-                font-size: 11px;
-            }
-            .checkbox-group {
-                padding: 8px 12px;
-            }
-            .total-display {
-                font-size: 16px;
-                padding: 8px 12px;
             }
             .product-score-cards {
                 grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -853,20 +765,13 @@
             .product-card .prod-detail {
                 font-size: 11px;
             }
-            .product-card .prod-icon {
-                width: 38px;
-                height: 38px;
-                min-width: 38px;
-                font-size: 16px;
+            .footer {
+                padding: 15px 18px;
             }
         }
         @media (max-width: 480px) {
             .score-cards {
                 grid-template-columns: 1fr 1fr;
-            }
-            .sidebar {
-                width: 100%;
-                max-width: 300px;
             }
             .page-title {
                 font-size: 18px;
@@ -878,8 +783,7 @@
                 font-size: 11px;
                 min-width: 350px;
             }
-            th,
-            td {
+            th, td {
                 padding: 6px 8px;
             }
             .product-score-cards {
@@ -907,58 +811,29 @@
             }
         }
         @media (prefers-color-scheme: dark) {
-            body {
-                background: #1a1a2e;
-            }
-            .card,
-            .table-container,
-            .form-card,
-            .sync-status,
-            .product-card {
+            body { background: #1a1a2e; }
+            .card, .table-container, .form-card, .sync-status, .product-card {
                 background: #16213e;
                 color: #e0e0e0;
             }
-            .card-label {
-                color: #aaa;
-            }
-            .card-value {
-                color: #fff;
-            }
-            .page-title {
-                color: #fff;
-            }
-            .form-group label {
-                color: #e0e0e0;
-            }
-            .form-group input,
-            .form-group select {
+            .card-label { color: #aaa; }
+            .card-value { color: #fff; }
+            .page-title { color: #fff; }
+            .form-group label { color: #e0e0e0; }
+            .form-group input, .form-group select {
                 background: #1a1a2e;
                 border-color: #333;
                 color: #e0e0e0;
             }
-            .form-group input:focus,
-            .form-group select:focus {
+            .form-group input:focus, .form-group select:focus {
                 border-color: #2d6a4f;
             }
-            table {
-                color: #e0e0e0;
-            }
-            thead {
-                background: #1a1a2e;
-            }
-            th {
-                color: #e0e0e0;
-                border-bottom-color: #333;
-            }
-            td {
-                border-bottom-color: #222;
-            }
-            tr:hover td {
-                background: #1a1a2e;
-            }
-            .table-container h3 {
-                color: #e0e0e0;
-            }
+            table { color: #e0e0e0; }
+            thead { background: #1a1a2e; }
+            th { color: #e0e0e0; border-bottom-color: #333; }
+            td { border-bottom-color: #222; }
+            tr:hover td { background: #1a1a2e; }
+            .table-container h3 { color: #e0e0e0; }
             .notification-banner {
                 background: #2d1f00;
                 border-left-color: #ffc107;
@@ -971,25 +846,15 @@
             .notification-banner .btn-close-notif {
                 color: #ffc107;
             }
-            .footer {
-                background: #0d1f18;
-            }
-            .footer .footer-brand {
-                color: #95d5b2;
-            }
-            .footer .footer-tagline {
-                color: #7a9e8e;
-            }
-            .footer .footer-credit {
-                color: #5a7a6a;
-            }
+            .footer { background: #0d1f18; }
+            .footer .footer-brand { color: #95d5b2; }
+            .footer .footer-tagline { color: #7a9e8e; }
+            .footer .footer-credit { color: #5a7a6a; }
             .checkbox-group {
                 background: #1a1a2e;
                 border-color: #333;
             }
-            .checkbox-group label {
-                color: #e0e0e0;
-            }
+            .checkbox-group label { color: #e0e0e0; }
             .total-display {
                 background: #1a2a1f;
                 border-color: #2d6a4f;
@@ -1015,45 +880,41 @@
             .product-card .prod-icon {
                 background: #e07c2c;
             }
+            .topbar {
+                background: #0d1f18;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- OVERLAY -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- SIDEBAR -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2><i class="fas fa-leaf"></i> <span>Jamu RUN</span></h2>
-            <button class="menu-toggle" id="closeSidebar">
-                <i class="fas fa-times"></i>
-            </button>
+    <!-- TOP BAR -->
+    <header class="topbar">
+        <div class="topbar-brand">
+            <i class="fas fa-leaf"></i> Jamu RUN
         </div>
-
-        <button class="nav-btn active" data-page="dashboard">
-            <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
-            <span class="nav-badge" id="notifBadge">0</span>
+        <button class="topbar-mobile-toggle" id="mobileMenuToggle">
+            <i class="fas fa-bars"></i>
         </button>
-        <button class="nav-btn" data-page="po">
-            <i class="fas fa-file-invoice"></i> <span>Input PO</span>
-        </button>
-        <button class="nav-btn" data-page="pembelian">
-            <i class="fas fa-shopping-cart"></i> <span>Pembelian</span>
-        </button>
-        <button class="nav-btn" data-page="produk">
-            <i class="fas fa-boxes"></i> <span>Produk</span>
-        </button>
-    </div>
+        <nav class="topbar-nav" id="topbarNav">
+            <button class="nav-btn active" data-page="dashboard">
+                <i class="fas fa-chart-pie"></i> Dashboard
+                <span class="nav-badge" id="notifBadge">0</span>
+            </button>
+            <button class="nav-btn" data-page="po">
+                <i class="fas fa-file-invoice"></i> Input PO
+            </button>
+            <button class="nav-btn" data-page="pembelian">
+                <i class="fas fa-shopping-cart"></i> Pembelian
+            </button>
+            <button class="nav-btn" data-page="produk">
+                <i class="fas fa-boxes"></i> Produk
+            </button>
+        </nav>
+    </header>
 
     <!-- MAIN WRAPPER -->
     <div class="main-wrapper">
-
-        <button class="menu-toggle" id="openSidebar" style="display:none; background:transparent; border:none; font-size:24px; color:#1a3c34; margin:12px 15px 0 15px;">
-            <i class="fas fa-bars"></i>
-        </button>
-
         <div class="main">
 
             <!-- DASHBOARD -->
@@ -1073,6 +934,7 @@
                     <i class="fas fa-cloud-upload-alt"></i> <span id="syncText">Online</span>
                 </div>
 
+                <!-- SCORE CARDS - without PO On Proses -->
                 <div class="score-cards">
                     <div class="card green">
                         <div class="card-icon"><i class="fas fa-arrow-down"></i></div>
@@ -1095,13 +957,6 @@
                             <span class="card-value" id="saldo">Rp 0</span>
                         </div>
                     </div>
-                    <div class="card orange">
-                        <div class="card-icon"><i class="fas fa-clock"></i></div>
-                        <div class="card-info">
-                            <span class="card-label">PO On Proses</span>
-                            <span class="card-value" id="poOnProses">0</span>
-                        </div>
-                    </div>
                     <div class="card purple">
                         <div class="card-icon"><i class="fas fa-hourglass-half"></i></div>
                         <div class="card-info">
@@ -1111,7 +966,7 @@
                     </div>
                 </div>
 
-                <!-- PRODUCT ON-PROSES SCORE CARDS - NO TEXT CUT OFF -->
+                <!-- PRODUCT ON-PROSES SCORE CARDS -->
                 <div class="product-score-cards" id="productScoreCards"></div>
 
                 <div class="table-container">
@@ -1295,7 +1150,6 @@
                 created with <i class="fas fa-heart"></i> by Beloved
             </div>
         </div>
-
     </div>
 
     <!-- TOAST -->
@@ -1416,9 +1270,9 @@
         let isDashboardActive = true;
 
         // ============================================================
-        // NAVIGATION
+        // NAVIGATION - TOP BAR
         // ============================================================
-        const navBtns = document.querySelectorAll('.nav-btn');
+        const navBtns = document.querySelectorAll('.topbar-nav .nav-btn');
         const pages = {
             dashboard: document.getElementById('page-dashboard'),
             po: document.getElementById('page-po'),
@@ -1448,38 +1302,16 @@
                     updateTotalDisplay();
                 }
                 if (pageId === 'pembelian') renderPembelian();
-                closeSidebar();
+
+                // Close mobile nav
+                document.getElementById('topbarNav').classList.remove('open');
             });
         });
 
-        // ============================================================
-        // SIDEBAR TOGGLE
-        // ============================================================
-        function openSidebar() {
-            document.getElementById('sidebar').classList.add('open');
-            document.getElementById('sidebarOverlay').classList.add('active');
-        }
-
-        function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('active');
-        }
-
-        document.getElementById('openSidebar').addEventListener('click', openSidebar);
-        document.getElementById('closeSidebar').addEventListener('click', closeSidebar);
-        document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
-
-        function checkMobileMenu() {
-            const menuBtn = document.getElementById('openSidebar');
-            if (window.innerWidth <= 768) {
-                menuBtn.style.display = 'inline-block';
-            } else {
-                menuBtn.style.display = 'none';
-                closeSidebar();
-            }
-        }
-        window.addEventListener('resize', checkMobileMenu);
-        checkMobileMenu();
+        // Mobile toggle
+        document.getElementById('mobileMenuToggle').addEventListener('click', function() {
+            document.getElementById('topbarNav').classList.toggle('open');
+        });
 
         // ============================================================
         // NOTIFIKASI
@@ -1813,15 +1645,13 @@
         });
 
         // ============================================================
-        // RENDER PRODUCT ON-PROSES SCORE CARDS - NO TEXT CUT OFF
+        // RENDER PRODUCT ON-PROSES SCORE CARDS
         // ============================================================
         function renderProductScoreCards() {
             const container = document.getElementById('productScoreCards');
             
-            // Filter PO dengan status "On Proses" dan bukan gratis
             const onProsesItems = poData.filter(p => p.status === 'On Proses' && !p.is_free);
             
-            // Group by produk
             const grouped = {};
             onProsesItems.forEach(p => {
                 if (!grouped[p.produk]) {
@@ -1846,7 +1676,6 @@
                 return;
             }
 
-            // Cari volume produk untuk display
             container.innerHTML = entries.map(([nama, data]) => {
                 const prod = produkData.find(p => p.nama === nama);
                 const volumeLabel = prod ? `${prod.volume} ml` : '';
@@ -1875,27 +1704,6 @@
 
             const uangKeluar = pembelianData.reduce((sum, p) => sum + (p.total || 0), 0);
 
-            // PO On Proses count (akumulasi per customer + produk)
-            const onProsesItems = poData.filter(p => p.status === 'On Proses' && !p.is_free);
-            const grouped = {};
-            onProsesItems.forEach(p => {
-                const key = p.customer + '|' + p.produk;
-                if (!grouped[key]) {
-                    grouped[key] = {
-                        customer: p.customer,
-                        produk: p.produk,
-                        totalQty: 0,
-                        totalHarga: 0,
-                        items: []
-                    };
-                }
-                grouped[key].totalQty += p.jumlah;
-                grouped[key].totalHarga += p.total;
-                grouped[key].items.push(p);
-            });
-            const poOnProsesCount = Object.keys(grouped).length;
-
-            // Belum Dibayar (On Proses + Siap Kirim) - total uang yang belum masuk
             const belumBayar = poData
                 .filter(p => p && (p.status === 'On Proses' || p.status === 'Siap Kirim') && !p.is_free)
                 .reduce((sum, p) => sum + (p.total || 0), 0);
@@ -1903,10 +1711,8 @@
             document.getElementById('uangMasuk').textContent = 'Rp ' + formatRupiah(uangMasuk);
             document.getElementById('uangKeluar').textContent = 'Rp ' + formatRupiah(uangKeluar);
             document.getElementById('saldo').textContent = 'Rp ' + formatRupiah(uangMasuk - uangKeluar);
-            document.getElementById('poOnProses').textContent = poOnProsesCount;
             document.getElementById('belumDibayar').textContent = 'Rp ' + formatRupiah(belumBayar);
 
-            // Render product score cards
             renderProductScoreCards();
 
             const tbody = document.getElementById('poTableBody');
@@ -1915,7 +1721,6 @@
                 return;
             }
 
-            // Akumulasi untuk status On Proses (per customer + produk)
             const onProsesMap = {};
             poData.forEach(p => {
                 if (p.status === 'On Proses' && !p.is_free) {
@@ -1936,11 +1741,9 @@
                 }
             });
 
-            // Buat daftar final untuk ditampilkan
             const displayList = [];
             const statusOrder = ['On Proses', 'Siap Kirim', 'Sudah Dibayar'];
 
-            // 1. On Proses (akumulasi)
             Object.keys(onProsesMap).forEach(key => {
                 const g = onProsesMap[key];
                 displayList.push({
@@ -1955,7 +1758,6 @@
                 });
             });
 
-            // 2. Siap Kirim & Sudah Dibayar (tampil per item)
             poData.forEach(p => {
                 if (p.status !== 'On Proses' || p.is_free) {
                     displayList.push({
@@ -1971,7 +1773,6 @@
                 }
             });
 
-            // Sortir
             displayList.sort((a, b) => {
                 const idxA = statusOrder.indexOf(a.status);
                 const idxB = statusOrder.indexOf(b.status);
@@ -1994,7 +1795,6 @@
                     jumlahDisplay = `<span class="po-accumulated">${item.jumlah}</span>`;
                 }
 
-                // Cari volume produk
                 const produkItem = produkData.find(p => p.nama === item.produk);
                 const volumeLabel = produkItem ? ` (${produkItem.volume} ml)` : '';
                 const produkDisplay = item.produk + volumeLabel;
@@ -2053,7 +1853,6 @@
             }).join('');
         }
 
-        // Update status untuk group (akumulasi)
         window.updateStatusPOGroup = async function(idsStr, newStatus) {
             const ids = idsStr.split(',').map(id => parseInt(id));
             if (!confirm(`Update ${ids.length} PO ke status "${newStatus}"?`)) return;
@@ -2072,7 +1871,6 @@
             }
         };
 
-        // Update status single
         window.updateStatusPO = async function(id, newStatus) {
             try {
                 await supabaseFetch('po?id=eq.' + id, {
@@ -2087,7 +1885,6 @@
             }
         };
 
-        // Delete group
         window.deletePOGroup = async function(idsStr) {
             const ids = idsStr.split(',').map(id => parseInt(id));
             if (!confirm(`Hapus ${ids.length} PO?`)) return;
@@ -2103,7 +1900,6 @@
             }
         };
 
-        // Delete single (fallback)
         window.deletePO = async function(id) {
             if (!confirm('Yakin hapus PO ini?')) return;
             try {
