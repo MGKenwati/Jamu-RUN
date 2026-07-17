@@ -229,6 +229,8 @@
         .btn-warning:hover { background: #e08f4a; }
         .btn-success { background: #2d6a4f; color: white; }
         .btn-success:hover { background: #1a3c34; }
+        .btn-info { background: #17a2b8; color: white; }
+        .btn-info:hover { background: #138496; }
         .btn-sm { padding: 5px 12px; font-size: 12px; }
         .action-group { display: flex; gap: 5px; flex-wrap: wrap; }
 
@@ -972,7 +974,6 @@
                 pembelianData = pembelianResult || [];
                 customers = [...new Set(poData.map(p => p.customer).filter(Boolean))];
 
-                // Load resep dari Supabase
                 if (resepResult && resepResult.length > 0) {
                     resepData = resepResult.map(r => ({
                         id: r.id,
@@ -982,7 +983,6 @@
                         bahan: r.bahan || []
                     }));
                 } else {
-                    // Kalo kosong, buat default dan simpan ke Supabase
                     await initDefaultResep();
                 }
 
@@ -1007,7 +1007,7 @@
         }
 
         // ============================================================
-        //  INIT DEFAULT RESEP (di Supabase)
+        //  INIT DEFAULT RESEP
         // ============================================================
         async function initDefaultResep() {
             const defaultResep = [
@@ -1061,8 +1061,6 @@
         // ============================================================
         //  RESEP - CRUD ke Supabase
         // ============================================================
-        
-        // Tambah Resep
         async function tambahResepSupabase() {
             const newResep = {
                 id: 'r' + Date.now() + Math.random().toString(36).substr(2, 5),
@@ -1098,7 +1096,6 @@
             }
         }
 
-        // Update Resep
         async function updateResepSupabase(resep) {
             try {
                 await supabaseFetch('resep?id=eq.' + resep.id, {
@@ -1116,7 +1113,6 @@
             }
         }
 
-        // Hapus Resep
         async function hapusResepSupabase(id) {
             try {
                 await supabaseFetch('resep?id=eq.' + id, { method: 'DELETE' });
@@ -1319,7 +1315,6 @@
             const target = e.target.closest('button');
             if (!target) return;
 
-            // Hapus Resep
             if (target.dataset.action === 'hapusResep') {
                 const id = target.dataset.id;
                 if (!id) return;
@@ -1330,7 +1325,6 @@
                 return;
             }
 
-            // Hapus Bahan
             if (target.dataset.action === 'hapusBahan') {
                 const id = target.dataset.id;
                 const b = parseInt(target.dataset.b);
@@ -1350,7 +1344,6 @@
                 return;
             }
 
-            // Tambah Bahan
             if (target.dataset.action === 'tambahBahan') {
                 const id = target.dataset.id;
                 if (!id) return;
@@ -1367,14 +1360,13 @@
         });
 
         // ============================================================
-        //  RESEP - INPUT EVENTS (Auto-save ke Supabase)
+        //  RESEP - INPUT EVENTS
         // ============================================================
         let saveTimeout = null;
 
         document.addEventListener('input', function(e) {
             const target = e.target;
 
-            // Nama Resep
             if (target.classList.contains('nama-input')) {
                 const id = target.dataset.id;
                 if (!id) return;
@@ -1390,7 +1382,6 @@
                 return;
             }
 
-            // Botol Dasar
             if (target.classList.contains('input-botol-dasar')) {
                 const id = target.dataset.id;
                 if (!id) return;
@@ -1411,7 +1402,6 @@
                 return;
             }
 
-            // Target Botol
             if (target.classList.contains('input-target-botol')) {
                 const id = target.dataset.id;
                 if (!id) return;
@@ -1432,7 +1422,6 @@
                 return;
             }
 
-            // Bahan Nama
             if (target.classList.contains('input-bahan-nama')) {
                 const id = target.dataset.id;
                 const b = parseInt(target.dataset.b);
@@ -1451,7 +1440,6 @@
                 return;
             }
 
-            // Bahan Takaran
             if (target.classList.contains('input-bahan-takaran')) {
                 const id = target.dataset.id;
                 const b = parseInt(target.dataset.b);
@@ -1472,7 +1460,6 @@
                 return;
             }
 
-            // Bahan Satuan
             if (target.classList.contains('input-bahan-satuan')) {
                 const id = target.dataset.id;
                 const b = parseInt(target.dataset.b);
@@ -1493,7 +1480,7 @@
         });
 
         // ============================================================
-        //  RESEP - SCALING TARGET (Calculate page)
+        //  RESEP - SCALING TARGET
         // ============================================================
         document.getElementById('scalingTargetBotol').addEventListener('input', function() {
             if (selectedResepId) {
@@ -1513,9 +1500,6 @@
             }
         });
 
-        // ============================================================
-        //  RESEP - CLOSE SCALING
-        // ============================================================
         document.getElementById('closeScaling').addEventListener('click', function() {
             document.getElementById('scalingPanel').classList.add('hidden');
             selectedResepId = null;
@@ -1524,9 +1508,6 @@
             });
         });
 
-        // ============================================================
-        //  RESEP - TAMBAH RESEP (tombol)
-        // ============================================================
         document.getElementById('btnTambahResep').addEventListener('click', tambahResepSupabase);
 
         // ============================================================
@@ -1694,7 +1675,7 @@
                     method: 'POST',
                     body: {
                         customer, produk, jumlah, total,
-                        status: 'On Proses',
+                        status: isPaid && !isFree ? 'Sudah Dibayar' : 'On Proses',
                         is_free: isFree,
                         is_paid: isPaid && !isFree,
                         notes: notes || null
@@ -1817,6 +1798,7 @@
         //  DASHBOARD
         // ============================================================
         function renderDashboard() {
+            // Uang Masuk: SEMUA PO yang sudah dibayar (is_paid = true) dan bukan gratis
             const uangMasuk = poData
                 .filter(p => p && p.is_paid === true && !p.is_free)
                 .reduce((sum, p) => sum + (p.total || 0), 0);
@@ -1924,12 +1906,12 @@
                 let statusBadge = statusMap[item.status] || 'badge-proses';
                 let statusLabel = item.status || 'On Proses';
                 
-                if (isFree) {
-                    statusBadge = 'badge-free';
-                    statusLabel += ' 🎁';
-                } else if (isPaid && item.status === 'On Proses') {
+                if (isPaid && item.status === 'On Proses') {
                     statusBadge = 'badge-dibayar-proses';
                     statusLabel = '💳 Dibayar & On Proses';
+                } else if (isFree) {
+                    statusBadge = 'badge-free';
+                    statusLabel += ' 🎁';
                 }
 
                 let jumlahDisplay = item.jumlah || 0;
@@ -1943,7 +1925,9 @@
                 const produkDisplay = `${item.produk}${volumeLabel} ${notesText}`;
 
                 let actionHtml = '';
-                if (item.status === 'On Proses' && item.is_accumulated) {
+                
+                // CASE 1: On Proses (belum bayar) - tampilkan tombol Kirim & Bayar
+                if (item.status === 'On Proses' && item.is_accumulated && !isPaid && !isFree) {
                     const ids = item.items.map(it => it.id).join(',');
                     actionHtml = `
                         <button class="btn btn-warning btn-sm" onclick="updateStatusPOGroup('${ids}', 'Siap Kirim')">
@@ -1953,7 +1937,7 @@
                             <i class="fas fa-check"></i> Bayar
                         </button>
                     `;
-                } else if (item.status === 'On Proses' && !item.is_accumulated && !item.is_free && !item.is_paid) {
+                } else if (item.status === 'On Proses' && !item.is_accumulated && !isFree && !isPaid) {
                     const id = item.items[0].id;
                     actionHtml = `
                         <button class="btn btn-warning btn-sm" onclick="updateStatusPO(${id}, 'Siap Kirim')">
@@ -1963,22 +1947,45 @@
                             <i class="fas fa-check"></i> Bayar
                         </button>
                     `;
-                } else if (item.status === 'On Proses' && !item.is_accumulated && item.is_paid && !item.is_free) {
+                } 
+                // CASE 2: 💳 Dibayar & On Proses (sudah bayar, belum diproduksi)
+                else if (item.status === 'On Proses' && isPaid && !isFree) {
                     const id = item.items[0].id;
                     actionHtml = `
                         <button class="btn btn-warning btn-sm" onclick="updateStatusPO(${id}, 'Siap Kirim')">
                             <i class="fas fa-truck"></i> Kirim
                         </button>
+                        <span class="badge badge-dibayar-proses" style="padding:5px 12px; font-size:11px;">
+                            ✅ Sudah Bayar
+                        </span>
                     `;
-                } else if (item.status === 'On Proses' && !item.is_accumulated && item.is_free) {
-                    actionHtml = `<button class="btn btn-danger btn-sm" onclick="deletePO(${item.items[0].id})">
-                                    <i class="fas fa-trash"></i>
-                                </button>`;
-                } else if (item.status === 'Siap Kirim' && !item.is_accumulated) {
+                } 
+                // CASE 3: On Proses - FREE
+                else if (item.status === 'On Proses' && isFree) {
+                    actionHtml = `
+                        <button class="btn btn-danger btn-sm" onclick="deletePO(${item.items[0].id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `;
+                } 
+                // CASE 4: Siap Kirim - tampilkan tombol Selesai (hanya jika sudah dibayar)
+                else if (item.status === 'Siap Kirim' && !item.is_accumulated) {
                     const id = item.items[0].id;
-                    actionHtml = `<button class="btn btn-success btn-sm" onclick="updateStatusPO(${id}, 'Sudah Dibayar')">
-                                    <i class="fas fa-check"></i> Bayar
-                                </button>`;
+                    if (isPaid) {
+                        // Sudah bayar → tombol Selesai
+                        actionHtml = `
+                            <button class="btn btn-success btn-sm" onclick="updateStatusPO(${id}, 'Sudah Dibayar')">
+                                <i class="fas fa-check-double"></i> Selesai
+                            </button>
+                        `;
+                    } else {
+                        // Belum bayar → tombol Bayar & Selesai
+                        actionHtml = `
+                            <button class="btn btn-success btn-sm" onclick="markAsPaidAndComplete(${id})">
+                                <i class="fas fa-check"></i> Bayar & Selesai
+                            </button>
+                        `;
+                    }
                 }
 
                 let deleteBtn = '';
@@ -1988,7 +1995,7 @@
                         deleteBtn = `<button class="btn btn-danger btn-sm" onclick="deletePOGroup('${ids}')">
                                         <i class="fas fa-trash"></i>
                                     </button>`;
-                    } else {
+                    } else if (!isFree || item.status !== 'On Proses') {
                         deleteBtn = `<button class="btn btn-danger btn-sm" onclick="deletePO(${item.items[0].id})">
                                         <i class="fas fa-trash"></i>
                                     </button>`;
@@ -2013,24 +2020,24 @@
             }).join('');
         }
 
+        // ============================================================
+        //  PRODUCT SCORE CARDS - PERBAIKAN FINAL
+        // ============================================================
         function renderProductScoreCards() {
             const container = document.getElementById('productScoreCards');
             
-            const onProsesItems = poData.filter(p => p.status === 'On Proses' && !p.is_free && !p.is_paid);
+            // Ambil SEMUA PO dengan status "On Proses"
+            const onProsesItems = poData.filter(p => p.status === 'On Proses');
             
             const grouped = {};
             onProsesItems.forEach(p => {
                 if (!grouped[p.produk]) {
                     grouped[p.produk] = {
                         produk: p.produk,
-                        totalQty: 0,
-                        totalCustomer: new Set(),
-                        items: []
+                        totalQty: 0
                     };
                 }
                 grouped[p.produk].totalQty += p.jumlah;
-                grouped[p.produk].totalCustomer.add(p.customer);
-                grouped[p.produk].items.push(p);
             });
 
             const entries = Object.entries(grouped);
@@ -2045,15 +2052,13 @@
             container.innerHTML = entries.map(([nama, data]) => {
                 const prod = produkData.find(p => p.nama === nama);
                 const volumeLabel = prod ? `${prod.volume} ml` : '';
-                const customerCount = data.totalCustomer.size;
                 
                 return `
                     <div class="product-card-small">
                         <div class="prod-icon"><i class="fas fa-flask"></i></div>
                         <div class="prod-info">
                             <div class="prod-name" title="${nama}">${nama}</div>
-                            <div class="prod-qty">${data.totalQty}</div>
-                            <div class="prod-detail" title="${volumeLabel} · ${customerCount} customer">${volumeLabel} · ${customerCount} customer</div>
+                            <div class="prod-detail" style="font-size:13px; color:#666;">${volumeLabel} · ${data.totalQty} botol</div>
                         </div>
                     </div>
                 `;
@@ -2063,26 +2068,37 @@
         // ============================================================
         //  PO ACTIONS
         // ============================================================
+        
+        // 1. markAsPaid - HANYA update is_paid, TIDAK ubah status
         window.markAsPaid = async function(id) {
             const po = poData.find(p => p.id === id);
-            const confirmed = await showModal('Tandai Dibayar', `Tandai PO dari "${po?.customer || 'customer'}" sebagai sudah dibayar?`, 'Ya, Bayar', 'Batal', false);
+            const confirmed = await showModal('Tandai Dibayar', 
+                `Tandai PO dari "${po?.customer || 'customer'}" sebagai sudah dibayar? Status akan tetap "On Proses" karena barang belum dibuat.`, 
+                'Ya, Bayar', 'Batal', false
+            );
             if (!confirmed) return;
             try {
                 await supabaseFetch('po?id=eq.' + id, {
                     method: 'PATCH',
-                    body: { is_paid: true }
+                    body: { 
+                        is_paid: true
+                    }
                 });
                 await loadAllData();
-                showToastSimple('PO ditandai sudah dibayar! 💳');
+                showToastSimple('💳 Pembayaran dicatat! Status tetap On Proses');
             } catch (error) {
                 showToastSimple('Gagal update: ' + error.message, true);
                 console.error(error);
             }
         };
 
+        // 2. markAsPaidGroup - HANYA update is_paid
         window.markAsPaidGroup = async function(idsStr) {
             const ids = idsStr.split(',').map(id => parseInt(id));
-            const confirmed = await showModal('Tandai Dibayar', `Tandai ${ids.length} PO sebagai sudah dibayar?`, 'Ya, Bayar Semua', 'Batal', false);
+            const confirmed = await showModal('Tandai Dibayar', 
+                `Tandai ${ids.length} PO sebagai sudah dibayar? Status akan tetap "On Proses".`, 
+                'Ya, Bayar Semua', 'Batal', false
+            );
             if (!confirmed) return;
             try {
                 for (const id of ids) {
@@ -2099,9 +2115,58 @@
             }
         };
 
+        // 3. markAsPaidAndComplete - Bayar DAN selesai (untuk Siap Kirim)
+        window.markAsPaidAndComplete = async function(id) {
+            const po = poData.find(p => p.id === id);
+            const confirmed = await showModal('Bayar & Selesai', 
+                `Tandai PO "${po?.customer}" sebagai sudah dibayar DAN selesai?`, 
+                'Ya', 'Batal', false
+            );
+            if (!confirmed) return;
+            try {
+                await supabaseFetch('po?id=eq.' + id, {
+                    method: 'PATCH',
+                    body: { 
+                        is_paid: true,
+                        status: 'Sudah Dibayar'
+                    }
+                });
+                await loadAllData();
+                showToastSimple('✅ PO selesai! Sudah dibayar dan dikirim');
+            } catch (error) {
+                showToastSimple('Gagal update: ' + error.message, true);
+                console.error(error);
+            }
+        };
+
+        // 4. updateStatusPO - Update status saja
+        window.updateStatusPO = async function(id, newStatus) {
+            const po = poData.find(p => p.id === id);
+            const confirmed = await showModal('Update Status', 
+                `Update PO dari "${po?.customer || 'customer'}" ke status "${newStatus}"?`, 
+                'Ya, Update', 'Batal', false
+            );
+            if (!confirmed) return;
+            try {
+                await supabaseFetch('po?id=eq.' + id, {
+                    method: 'PATCH',
+                    body: { status: newStatus }
+                });
+                await loadAllData();
+                showToastSimple(`Status diubah menjadi ${newStatus}`);
+            } catch (error) {
+                showToastSimple('Gagal update status: ' + error.message, true);
+                console.error(error);
+            }
+        };
+
+        // 5. updateStatusPOGroup - Update status group
         window.updateStatusPOGroup = async function(idsStr, newStatus) {
             const ids = idsStr.split(',').map(id => parseInt(id));
-            const confirmed = await showModal('Update Status', `Update ${ids.length} PO ke status "${newStatus}"?`, 'Ya, Update', 'Batal', false);
+            const confirmed = await showModal('Update Status', 
+                `Update ${ids.length} PO ke status "${newStatus}"?`, 
+                'Ya, Update', 'Batal', false
+            );
             if (!confirmed) return;
             try {
                 for (const id of ids) {
@@ -2118,26 +2183,31 @@
             }
         };
 
-        window.updateStatusPO = async function(id, newStatus) {
+        // 6. deletePO
+        window.deletePO = async function(id) {
             const po = poData.find(p => p.id === id);
-            const confirmed = await showModal('Update Status', `Update PO dari "${po?.customer || 'customer'}" ke status "${newStatus}"?`, 'Ya, Update', 'Batal', false);
+            const confirmed = await showModal('Hapus PO', 
+                `Yakin hapus PO dari "${po?.customer || 'customer'}"?`, 
+                'Ya, Hapus', 'Batal', true
+            );
             if (!confirmed) return;
             try {
-                await supabaseFetch('po?id=eq.' + id, {
-                    method: 'PATCH',
-                    body: { status: newStatus }
-                });
+                await supabaseFetch('po?id=eq.' + id, { method: 'DELETE' });
                 await loadAllData();
-                showToastSimple(`Status diubah menjadi ${newStatus}`);
+                showToastSimple('PO dihapus!');
             } catch (error) {
-                showToastSimple('Gagal update status: ' + error.message, true);
+                showToastSimple('Gagal hapus PO: ' + error.message, true);
                 console.error(error);
             }
         };
 
+        // 7. deletePOGroup
         window.deletePOGroup = async function(idsStr) {
             const ids = idsStr.split(',').map(id => parseInt(id));
-            const confirmed = await showModal('Hapus PO', `Yakin hapus ${ids.length} PO?`);
+            const confirmed = await showModal('Hapus PO', 
+                `Yakin hapus ${ids.length} PO?`, 
+                'Ya, Hapus', 'Batal', true
+            );
             if (!confirmed) return;
             try {
                 for (const id of ids) {
@@ -2145,20 +2215,6 @@
                 }
                 await loadAllData();
                 showToastSimple(`${ids.length} PO dihapus!`);
-            } catch (error) {
-                showToastSimple('Gagal hapus PO: ' + error.message, true);
-                console.error(error);
-            }
-        };
-
-        window.deletePO = async function(id) {
-            const po = poData.find(p => p.id === id);
-            const confirmed = await showModal('Hapus PO', `Yakin hapus PO dari "${po?.customer || 'customer'}"?`);
-            if (!confirmed) return;
-            try {
-                await supabaseFetch('po?id=eq.' + id, { method: 'DELETE' });
-                await loadAllData();
-                showToastSimple('PO dihapus!');
             } catch (error) {
                 showToastSimple('Gagal hapus PO: ' + error.message, true);
                 console.error(error);
